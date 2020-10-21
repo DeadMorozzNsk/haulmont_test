@@ -1,3 +1,9 @@
+drop table PATIENTS if exists;
+drop table DOCTORS if exists;
+drop table SPECIALIZATIONS if exists;
+drop table DOCTORS_SPECS if exists;
+drop table PRIORITIES if exists;
+drop table RECIPES if exists;
 --пациенты
 create table PATIENTS
 (
@@ -43,7 +49,7 @@ create table DOCTORS_SPECS
 --приоритеты
 create table PRIORITIES
 (
-    ID  tinyint identity
+    ID  bigint identity
         constraint PRIORITIES_PK
             primary key,
     NAME varchar(16)
@@ -63,7 +69,7 @@ create table RECIPES
             references DOCTORS(ID),
     CREATION_DATE   date not null,
     EXPIRATION_DATE date not null,
-    PRIORITY        tinyint not null
+    PRIORITY_ID     bigint not null
         constraint RECIPES_PRIORITIES_ID_FK
             references PRIORITIES(ID)
 );

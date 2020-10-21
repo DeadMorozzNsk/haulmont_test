@@ -1,30 +1,44 @@
 package com.haulmont.testtask.dao;
 
-import java.util.List;
+import com.haulmont.testtask.domain.Recipe;
 
-public class DaoRecipe implements DaoMain {
+import java.sql.*;
+
+public class DaoRecipe extends DaoEntity<Recipe> {
+
     @Override
-    public Object insert(Object object) throws DaoException {
+    protected Recipe getEntity(ResultSet rs) throws DaoException {
         return null;
     }
 
     @Override
-    public void update(Object object) throws DaoException {
-
+    protected ResultSet getAllResultSet(Statement statement) throws SQLException {
+        return statement.executeQuery("SELECT * FROM RECIPES");
     }
 
     @Override
-    public void delete(Object object) throws DaoException {
-
-    }
-
-    @Override
-    public Object getByPrimaryKey(Long key) throws DaoException {
+    protected PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) throws SQLException {
         return null;
     }
 
     @Override
-    public List getAll() throws DaoException {
+    protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
         return null;
+    }
+
+    @Override
+    protected PreparedStatement getDeletePrepStatement(Connection connection, Object paramEntityId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM RECIPES WHERE ID = ?");
+        try {
+            preparedStatement.setLong(1, (Long) paramEntityId);
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+        return preparedStatement;
+    }
+
+    @Override
+    protected void setValues(PreparedStatement stmt, Recipe entity) throws SQLException {
+
     }
 }
