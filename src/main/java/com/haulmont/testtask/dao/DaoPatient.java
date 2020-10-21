@@ -8,7 +8,16 @@ public class DaoPatient extends DaoEntity<Patient> {
 
     @Override
     protected Patient getEntity(ResultSet rs) throws DaoException {
-        return null;
+        try {
+            return new Patient(
+                    rs.getLong("ID"),
+                    rs.getString("NAME"),
+                    rs.getString("SURNAME"),
+                    rs.getString("PATRONYM"),
+                    rs.getString("PHONE_NUMBER"));
+        } catch (SQLException e) {
+            throw new DaoException("Could not create \"Patient\" entity", e);
+        }
     }
 
     @Override
@@ -17,13 +26,20 @@ public class DaoPatient extends DaoEntity<Patient> {
     }
 
     @Override
-    protected PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        return null;
+    protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
+        PreparedStatement ps = getAddOrUpdateStatement(connection,
+                paramEntity,
+                "INSERT INTO PATIENTS (NAME, SURNAME, PATRONYM, PHONE_NUMBER) VALUES (?, ?, ?, ?)");
+        return ps;
     }
 
     @Override
-    protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        return null;
+    protected PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) throws SQLException {
+        PreparedStatement ps = getAddOrUpdateStatement(connection,
+                paramEntity,
+                "UPDATE PATIENTS SET NAME = ?, SURNAME = ?, PATRONYM = ?, PHONE_NUMBER = ? WHERE ID = ?");
+        ps.setLong(5, ((Patient)paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
+        return ps;
     }
 
     @Override
@@ -39,7 +55,10 @@ public class DaoPatient extends DaoEntity<Patient> {
 
     @Override
     protected void setValues(PreparedStatement stmt, Patient entity) throws SQLException {
-
+        stmt.setString(1, entity.getName());
+        stmt.setString(2, entity.getSurname());
+        stmt.setString(3, entity.getPatronym());
+        stmt.setString(4, entity.getPhoneNumber());
     }
 
 }
