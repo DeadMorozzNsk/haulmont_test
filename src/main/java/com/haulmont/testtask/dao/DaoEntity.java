@@ -15,9 +15,9 @@ public abstract class DaoEntity<E extends Entity> {
 
     protected abstract ResultSet getAllResultSet(Statement statement) throws SQLException;
 
-    protected abstract PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) throws SQLException;
-
     protected abstract PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException;
+
+    protected abstract PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) throws SQLException;
 
     protected abstract PreparedStatement getDeletePrepStatement(Connection connection, Object paramEntityId) throws SQLException;
 

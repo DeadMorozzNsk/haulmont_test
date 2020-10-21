@@ -37,27 +37,23 @@ public class DaoDoctor extends DaoEntity<Doctor> {
         PreparedStatement ps = getAddOrUpdateStatement(connection,
                 paramEntity,
                 "UPDATE DOCTORS SET NAME = ?, SURNAME = ?, PATRONYM = ?, SPECIALIZATION = ? WHERE ID = ?");
-        ps.setLong(5, ((Doctor)paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
+        ps.setLong(5, ((Doctor) paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
         return ps;
     }
 
     @Override
     protected PreparedStatement getDeletePrepStatement(Connection connection, Object paramEntityId) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM DOCTORS WHERE ID = ?");
-        try {
-            preparedStatement.setLong(1, (Long) paramEntityId);
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-        }
+        preparedStatement.setLong(1, (Long) paramEntityId);
         return preparedStatement;
     }
 
     @Override
     protected void setValues(PreparedStatement stmt, Doctor entity) throws SQLException {
-            stmt.setString(1, entity.getName());
-            stmt.setString(2, entity.getSurname());
-            stmt.setString(3, entity.getPatronym());
-            stmt.setString(4, entity.getSpecialization());
+        stmt.setString(1, entity.getName());
+        stmt.setString(2, entity.getSurname());
+        stmt.setString(3, entity.getPatronym());
+        stmt.setString(4, entity.getSpecialization());
     }
 
 }

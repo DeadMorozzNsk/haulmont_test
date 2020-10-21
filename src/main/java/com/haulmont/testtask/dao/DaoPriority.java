@@ -9,7 +9,10 @@ public class DaoPriority extends DaoEntity<Priority> {
     @Override
     protected Priority getEntity(ResultSet rs) throws DaoException {
         try {
-            return Priority.valueOf(rs.getString("NAME"));
+            return new Priority( /* same order as declared in class due to Lombok annotation */
+                    rs.getLong("ID"),
+                    rs.getInt("PRIORITY"),
+                    rs.getString("NAME"));
         } catch (SQLException e) {
             throw new DaoException("Could not create \"Priority\" entity", e);
         }
@@ -21,22 +24,36 @@ public class DaoPriority extends DaoEntity<Priority> {
     }
 
     @Override
-    protected PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) {
-        return null;
+    protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
+        PreparedStatement ps = getAddOrUpdateStatement(connection,
+                paramEntity,
+                "INSERT INTO PRIORITIES (" +
+                        "PRIORITY, " +
+                        "NAME) VALUES (?, ?)");
+        return ps;
     }
 
     @Override
-    protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) {
-        return null;
+    protected PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) throws SQLException {
+        PreparedStatement ps = getAddOrUpdateStatement(connection,
+                paramEntity,
+                "UPDATE PRIORITIES SET " +
+                        "PRIORITY = ?, " +
+                        "NAME = ?, WHERE ID = ?");
+        ps.setLong(3, ((Priority) paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
+        return ps;
     }
 
     @Override
-    protected PreparedStatement getDeletePrepStatement(Connection connection, Object paramEntityId) {
-        return null;
+    protected PreparedStatement getDeletePrepStatement(Connection connection, Object paramEntityId) throws SQLException{
+        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM PRIORITIES WHERE ID = ?");
+        preparedStatement.setLong(1, (Long) paramEntityId);
+        return preparedStatement;
     }
 
     @Override
-    protected void setValues(PreparedStatement stmt, Priority entity) {
-
+    protected void setValues(PreparedStatement stmt, Priority entity) throws SQLException {
+        stmt.setInt(1, entity.getPriority());
+        stmt.setString(2, entity.getName());
     }
 }

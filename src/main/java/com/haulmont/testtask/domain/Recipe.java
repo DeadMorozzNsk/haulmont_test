@@ -13,10 +13,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class Recipe implements Entity{
     long id;
-    long doctorId;
-    long patientId;
-    short priorityId;
     String description;
+    long patientId;
+    long doctorId;
     Date creationDate;
     Date expirationDate;
+    long priorityId;
 }

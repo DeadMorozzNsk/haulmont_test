@@ -1,19 +1,16 @@
 package com.haulmont.testtask.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-public enum Priority implements Entity {
-    NORMAL((short) 5, "Нормальный"),
-    CITO((short) 7, "Срочный"),
-    STATIM((short) 10, "Немедленный");
-
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Priority implements Entity {
     long id;
     int priority;
     String name;
-
-    Priority(int priority, String name) {
-        this.priority = priority;
-        this.name = name;
-    }
 }

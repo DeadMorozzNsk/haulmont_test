@@ -38,18 +38,14 @@ public class DaoPatient extends DaoEntity<Patient> {
         PreparedStatement ps = getAddOrUpdateStatement(connection,
                 paramEntity,
                 "UPDATE PATIENTS SET NAME = ?, SURNAME = ?, PATRONYM = ?, PHONE_NUMBER = ? WHERE ID = ?");
-        ps.setLong(5, ((Patient)paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
+        ps.setLong(5, ((Patient) paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
         return ps;
     }
 
     @Override
     protected PreparedStatement getDeletePrepStatement(Connection connection, Object paramEntityId) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM PATIENTS WHERE ID = ?");
-        try {
-            preparedStatement.setLong(1, (Long) paramEntityId);
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-        }
+        preparedStatement.setLong(1, (Long) paramEntityId);
         return preparedStatement;
     }
 
