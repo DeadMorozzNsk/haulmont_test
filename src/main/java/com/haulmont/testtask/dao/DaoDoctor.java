@@ -26,10 +26,9 @@ public class DaoDoctor extends DaoEntity<Doctor> {
 
     @Override
     protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        PreparedStatement ps = getAddOrUpdateStatement(connection,
+        return getAddOrUpdateStatement(connection,
                 paramEntity,
                 "INSERT INTO DOCTORS (NAME, SURNAME, PATRONYM, SPECIALIZATION) VALUES (?, ?, ?, ?)");
-        return ps;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class DaoRecipe extends DaoEntity<Recipe> {
 
     @Override
     protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        PreparedStatement ps = getAddOrUpdateStatement(connection,
+        return getAddOrUpdateStatement(connection,
                 paramEntity,
                 "INSERT INTO RECIPES (" +
                         "DESCRIPTION, " +
@@ -39,7 +39,6 @@ public class DaoRecipe extends DaoEntity<Recipe> {
                         "CREATION_DATE, " +
                         "EXPIRATION_DATE, " +
                         "PRIORITY_ID) VALUES (?, ?, ?, ?, ?, ?)");
-        return ps;
     }
 
     @Override

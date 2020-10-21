@@ -25,12 +25,11 @@ public class DaoPriority extends DaoEntity<Priority> {
 
     @Override
     protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        PreparedStatement ps = getAddOrUpdateStatement(connection,
+        return getAddOrUpdateStatement(connection,
                 paramEntity,
                 "INSERT INTO PRIORITIES (" +
                         "PRIORITY, " +
                         "NAME) VALUES (?, ?)");
-        return ps;
     }
 
     @Override
