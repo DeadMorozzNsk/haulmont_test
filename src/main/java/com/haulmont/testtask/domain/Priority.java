@@ -9,10 +9,10 @@ public enum Priority implements Entity {
     STATIM((short) 10, "Немедленный");
 
     long id;
-    short priority;
+    int priority;
     String name;
 
-    Priority(short priority, String name) {
+    Priority(int priority, String name) {
         this.priority = priority;
         this.name = name;
     }
