@@ -1,7 +1,5 @@
 drop table PATIENTS if exists;
 drop table DOCTORS if exists;
-drop table SPECIALIZATIONS if exists;
-drop table DOCTORS_SPECS if exists;
 drop table PRIORITIES if exists;
 drop table RECIPES if exists;
 --пациенты
@@ -23,28 +21,8 @@ create table DOCTORS
             primary key,
     NAME              varchar(50) not null,
     SURNAME           varchar(50) not null,
-    PATRONYM        varchar(50) not null
-);
---специализации
-create table SPECIALIZATIONS
-(
-    ID  bigint identity
-        constraint SPECIALIZATIONS_SPECS_PK
-            primary key,
-    NAME varchar(50) not null
-);
---мэппинг докторов и специализаций, т.к. у одного доктора может быть более 1 специализации
-create table DOCTORS_SPECS
-(
-    ID  bigint identity
-        constraint DOCTORS_SPECS_PK
-            primary key,
-    DOCTOR_ID bigint not null
-        constraint DOCTORS_SPECS_DOCTORS_ID_FK
-            references DOCTORS(ID),
-    SPECIALIZATION_ID bigint not null
-        constraint DOCTORS_SPECS_SPECIALIZATIONS_ID_FK
-            references SPECIALIZATIONS(ID)
+    PATRONYM          varchar(50) not null,
+    SPECIALIZATION    varchar(50) not null
 );
 --приоритеты
 create table PRIORITIES
@@ -52,7 +30,8 @@ create table PRIORITIES
     ID  bigint identity
         constraint PRIORITIES_PK
             primary key,
-    NAME varchar(16)
+    PRIORITY int not null,
+    NAME varchar(16) not null
 );
 --рецепты
 create table RECIPES
