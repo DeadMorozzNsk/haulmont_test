@@ -1,5 +1,7 @@
 package com.haulmont.testtask.dao;
 
+import com.haulmont.testtask.dao.database.JdbcController;
+import com.haulmont.testtask.dao.database.JdbcControllerException;
 import com.haulmont.testtask.domain.Priority;
 
 import java.sql.*;
@@ -7,35 +9,29 @@ import java.sql.*;
 public class DaoPriority extends DaoEntity<Priority> {
 
     @Override
-    protected Priority getEntity(ResultSet rs) throws DaoException {
-        try {
-            return new Priority( /* same order as declared in class due to Lombok annotation */
-                    rs.getLong("ID"),
-                    rs.getInt("PRIORITY"),
-                    rs.getString("NAME"));
-        } catch (SQLException e) {
-            throw new DaoException("Could not create \"Priority\" entity", e);
-        }
+    protected Priority getEntity(ResultSet rs) throws SQLException {
+        return new Priority( /* same order as declared in class due to Lombok annotation */
+                rs.getLong("ID"),
+                rs.getInt("PRIORITY"),
+                rs.getString("NAME"));
     }
 
     @Override
-    protected ResultSet getAllResultSet(Statement statement) throws SQLException {
-        return statement.executeQuery("SELECT * FROM PRIORITIES");
+    protected ResultSet getAllResultSet() throws JdbcControllerException {
+        return JdbcController.getInstance().executeQuery("SELECT * FROM PRIORITIES");
     }
 
     @Override
-    protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        return getAddOrUpdateStatement(connection,
-                paramEntity,
+    protected PreparedStatement getAddPrepStatement(Object paramEntity) throws SQLException {
+        return getAddOrUpdateStatement(paramEntity,
                 "INSERT INTO PRIORITIES (" +
                         "PRIORITY, " +
                         "NAME) VALUES (?, ?)");
     }
 
     @Override
-    protected PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        PreparedStatement ps = getAddOrUpdateStatement(connection,
-                paramEntity,
+    protected PreparedStatement getUpdatePrepStatement(Object paramEntity) throws SQLException {
+        PreparedStatement ps = getAddOrUpdateStatement(paramEntity,
                 "UPDATE PRIORITIES SET " +
                         "PRIORITY = ?, " +
                         "NAME = ?, WHERE ID = ?");
@@ -44,10 +40,13 @@ public class DaoPriority extends DaoEntity<Priority> {
     }
 
     @Override
-    protected PreparedStatement getDeletePrepStatement(Connection connection, Object paramEntityId) throws SQLException{
-        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM PRIORITIES WHERE ID = ?");
-        preparedStatement.setLong(1, (Long) paramEntityId);
-        return preparedStatement;
+    protected PreparedStatement getDeletePrepStatement(Object paramEntityId) throws SQLException {
+        return getWhereIdStatement(paramEntityId, "DELETE FROM PRIORITIES WHERE ID = ?");
+    }
+
+    @Override
+    protected PreparedStatement getByIdPrepStatement(Object paramEntityId) throws SQLException {
+        return getWhereIdStatement(paramEntityId, "SELECT * FROM PRIORITIES WHERE ID = ?");
     }
 
     @Override

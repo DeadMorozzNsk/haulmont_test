@@ -1,50 +1,49 @@
 package com.haulmont.testtask.dao;
 
+import com.haulmont.testtask.dao.database.JdbcController;
+import com.haulmont.testtask.dao.database.JdbcControllerException;
 import com.haulmont.testtask.domain.Doctor;
 
 import java.sql.*;
 
 public class DaoDoctor extends DaoEntity<Doctor> {
     @Override
-    protected Doctor getEntity(ResultSet rs) throws DaoException {
-        try {
-            return new Doctor(
-                    rs.getLong("ID"),
-                    rs.getString("NAME"),
-                    rs.getString("SURNAME"),
-                    rs.getString("PATRONYM"),
-                    rs.getString("SPECIALIZATION"));
-        } catch (SQLException e) {
-            throw new DaoException("Could not create \"Doctor\" entity", e);
-        }
+    protected Doctor getEntity(ResultSet rs) throws SQLException {
+        return new Doctor(
+                rs.getLong("ID"),
+                rs.getString("NAME"),
+                rs.getString("SURNAME"),
+                rs.getString("PATRONYM"),
+                rs.getString("SPECIALIZATION"));
     }
 
     @Override
-    protected ResultSet getAllResultSet(Statement statement) throws SQLException {
-        return statement.executeQuery("SELECT * FROM DOCTORS");
+    protected ResultSet getAllResultSet() throws JdbcControllerException {
+        return JdbcController.getInstance().executeQuery("SELECT * FROM DOCTORS");
     }
 
     @Override
-    protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        return getAddOrUpdateStatement(connection,
-                paramEntity,
+    protected PreparedStatement getAddPrepStatement(Object paramEntity) throws SQLException {
+        return getAddOrUpdateStatement(paramEntity,
                 "INSERT INTO DOCTORS (NAME, SURNAME, PATRONYM, SPECIALIZATION) VALUES (?, ?, ?, ?)");
     }
 
     @Override
-    protected PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        PreparedStatement ps = getAddOrUpdateStatement(connection,
-                paramEntity,
+    protected PreparedStatement getUpdatePrepStatement(Object paramEntity) throws SQLException {
+        PreparedStatement ps = getAddOrUpdateStatement(paramEntity,
                 "UPDATE DOCTORS SET NAME = ?, SURNAME = ?, PATRONYM = ?, SPECIALIZATION = ? WHERE ID = ?");
         ps.setLong(5, ((Doctor) paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
         return ps;
     }
 
     @Override
-    protected PreparedStatement getDeletePrepStatement(Connection connection, Object paramEntityId) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM DOCTORS WHERE ID = ?");
-        preparedStatement.setLong(1, (Long) paramEntityId);
-        return preparedStatement;
+    protected PreparedStatement getDeletePrepStatement(Object paramEntityId) throws SQLException {
+        return getWhereIdStatement(paramEntityId,"DELETE FROM DOCTORS WHERE ID = ?");
+    }
+
+    @Override
+    protected PreparedStatement getByIdPrepStatement(Object paramEntityId) throws SQLException {
+        return getWhereIdStatement(paramEntityId, "SELECT * FROM DOCTORS WHERE ID = ?");
     }
 
     @Override

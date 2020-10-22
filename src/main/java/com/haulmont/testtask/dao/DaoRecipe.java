@@ -1,37 +1,49 @@
 package com.haulmont.testtask.dao;
 
+import com.haulmont.testtask.dao.database.JdbcController;
+import com.haulmont.testtask.dao.database.JdbcControllerException;
 import com.haulmont.testtask.domain.Doctor;
+import com.haulmont.testtask.domain.Patient;
+import com.haulmont.testtask.domain.Priority;
 import com.haulmont.testtask.domain.Recipe;
 
-import java.sql.*;
+import java.sql.*;;
 
 public class DaoRecipe extends DaoEntity<Recipe> {
 
     @Override
-    protected Recipe getEntity(ResultSet rs) throws DaoException {
+    protected Recipe getEntity(ResultSet rs) throws SQLException {
+        Doctor doctor = null;
+        Patient patient = null;
+        Priority priority = null;
         try {
-            return new Recipe( /* same order as declared in class due to Lombok annotation */
-                    rs.getLong("ID"),
-                    rs.getString("DESCRIPTION"),
-                    rs.getLong("PATIENT_ID"),
-                    rs.getLong("DOCTOR_ID"),
-                    rs.getDate("CREATION_DATE"),
-                    rs.getDate("EXPIRATION_DATE"),
-                    rs.getLong("PRIORITY_ID"));
-        } catch (SQLException e) {
-            throw new DaoException("Could not create \"Patient\" entity", e);
+            doctor = DaoFactory.getInstance().getDaoDoctor().getById(rs.getLong("DOCTOR_ID"));
+            patient = DaoFactory.getInstance().getDaoPatient().getById(rs.getLong("PATIENT_ID"));
+            priority = DaoFactory.getInstance().getDaoPriority().getById(rs.getLong("PRIORITY_ID"));
+        } catch (DaoException e) {
+            System.err.println(e.getMessage());
         }
+        return new Recipe( /* same order as declared in class due to Lombok annotation */
+                rs.getLong("ID"),
+                rs.getString("DESCRIPTION"),
+                rs.getLong("PATIENT_ID"),
+                rs.getLong("DOCTOR_ID"),
+                rs.getDate("CREATION_DATE"),
+                rs.getDate("EXPIRATION_DATE"),
+                rs.getLong("PRIORITY_ID"),
+                patient,
+                doctor,
+                priority);
     }
 
     @Override
-    protected ResultSet getAllResultSet(Statement statement) throws SQLException {
-        return statement.executeQuery("SELECT * FROM RECIPES");
+    protected ResultSet getAllResultSet() throws JdbcControllerException {
+        return JdbcController.getInstance().executeQuery("SELECT * FROM RECIPES");
     }
 
     @Override
-    protected PreparedStatement getAddPrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        return getAddOrUpdateStatement(connection,
-                paramEntity,
+    protected PreparedStatement getAddPrepStatement(Object paramEntity) throws SQLException {
+        return getAddOrUpdateStatement(paramEntity,
                 "INSERT INTO RECIPES (" +
                         "DESCRIPTION, " +
                         "PATIENT_ID, " +
@@ -42,9 +54,8 @@ public class DaoRecipe extends DaoEntity<Recipe> {
     }
 
     @Override
-    protected PreparedStatement getUpdatePrepStatement(Connection connection, Object paramEntity) throws SQLException {
-        PreparedStatement ps = getAddOrUpdateStatement(connection,
-                paramEntity,
+    protected PreparedStatement getUpdatePrepStatement(Object paramEntity) throws SQLException {
+        PreparedStatement ps = getAddOrUpdateStatement(paramEntity,
                 "UPDATE RECIPES SET " +
                         "DESCRIPTION = ?, " +
                         "PATIENT_ID = ?, " +
@@ -57,10 +68,13 @@ public class DaoRecipe extends DaoEntity<Recipe> {
     }
 
     @Override
-    protected PreparedStatement getDeletePrepStatement(Connection connection, Object paramEntityId) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM RECIPES WHERE ID = ?");
-        preparedStatement.setLong(1, (Long) paramEntityId);
-        return preparedStatement;
+    protected PreparedStatement getDeletePrepStatement(Object paramEntityId) throws SQLException {
+        return getWhereIdStatement(paramEntityId, "DELETE FROM RECIPES WHERE ID = ?");
+    }
+
+    @Override
+    protected PreparedStatement getByIdPrepStatement(Object paramEntityId) throws SQLException {
+        return getWhereIdStatement(paramEntityId,"SELECT * FROM RECIPES WHERE ID = ?");
     }
 
     @Override
@@ -68,8 +82,8 @@ public class DaoRecipe extends DaoEntity<Recipe> {
         stmt.setString(1, entity.getDescription());
         stmt.setLong(2, entity.getPatientId());
         stmt.setLong(3, entity.getDoctorId());
-        stmt.setDate(4, (Date) entity.getCreationDate());
-        stmt.setDate(5, (Date) entity.getExpirationDate());
+        stmt.setDate(4, new Date(entity.getCreationDate().getTime()));
+        stmt.setDate(5, new Date(entity.getExpirationDate().getTime()));
         stmt.setLong(6, entity.getPriorityId());
     }
 }

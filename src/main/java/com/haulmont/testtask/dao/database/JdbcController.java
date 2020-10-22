@@ -12,7 +12,6 @@ import java.util.ResourceBundle;
  */
 @Getter
 public class JdbcController implements JdbcDao {
-    private static JdbcController instance;
     public Connection connection;
     public Statement statement;
 
@@ -23,77 +22,84 @@ public class JdbcController implements JdbcDao {
     private final String dbLogin = resource.getString("db.login");
     private final String dbPassword = resource.getString("db.password");
 
-    JdbcController() {
+    JdbcController() throws JdbcControllerException{
         try {
             Class.forName(resource.getString("db.driver"));
-            connection = DriverManager.getConnection(getConnectionString());
+            connection = DriverManager.getConnection(getConnectionString(), dbLogin, dbPassword);
             statement = connection.createStatement();
         } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+            throw new  JdbcControllerException("Error in JdbcController constructor method \n" +
+                    e.getMessage(), e);
         }
     }
 
-    public static synchronized JdbcDao getInstance(){
-        if (instance==null) instance = new JdbcController();
-        return instance;
+    private static class JdbcControllerHolder {
+        public static JdbcController instance = null;
+        static {
+            try {
+                instance = new JdbcController();
+            } catch (JdbcControllerException e) {
+                System.err.println(e.getMessage());
+            }
+        }
     }
 
-    @Override
-    public void connect() {
-        getConnection();
+    public static JdbcController getInstance() {
+        return JdbcControllerHolder.instance;
     }
 
     public Connection getConnection() {
-        if (instance == null) instance = new JdbcController();
         return connection;
     }
 
-    Statement getStatement() {
+    public Statement getStatement() {
         return statement;
     }
 
     private String getConnectionString() {
         return "jdbc:" + jdbcSubprotocol + ":" + dbPath;
     }
-    // Отключиться от базы
 
-    void disconnect() {
+    void disconnect() throws JdbcControllerException{
         try {
             connection.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new  JdbcControllerException("Error in JdbcController.disconnect() method \n" +
+                    e.getMessage(), e);
         }
     }
     // Выполнить SELECT
-
-    synchronized ResultSet executeQuery(String sql) {
+    public synchronized ResultSet executeQuery(String sql) throws JdbcControllerException{
         ResultSet rs = null;
 
         try {
             rs = statement.executeQuery(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new  JdbcControllerException("Error in JdbcController.executeQuery() method \n" +
+                    e.getMessage(), e);
         }
 
         return rs;
     }
     // Выполнить INSERT
 
-    synchronized void executeUpdate(String sql) {
+    synchronized void executeUpdate(String sql) throws JdbcControllerException{
         try {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new  JdbcControllerException("Error in JdbcController.executeUpdate() method \n" +
+                    e.getMessage(), e);
         }
     }
 
 
-    synchronized boolean execute(String sql) {
+    synchronized boolean execute(String sql) throws JdbcControllerException{
         boolean result = false;
         try {
-           result = statement.execute(sql);
+            result = statement.execute(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new  JdbcControllerException("Error in JdbcController.execute() method \n" +
+                    e.getMessage(), e);
         }
         return result;
     }
@@ -103,24 +109,27 @@ public class JdbcController implements JdbcDao {
         try {
             rs = statement.getResultSet();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new  JdbcControllerException("Error in JdbcController.getResultSet() method \n" +
+                    e.getMessage(), e);
         }
         return rs;
     }
 
-    synchronized void addBatch(String sql) {
+    synchronized void addBatch(String sql) throws JdbcControllerException{
         try {
             statement.addBatch(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new  JdbcControllerException("Error in JdbcController.addBatch() method \n" +
+                    e.getMessage(), e);
         }
     }
 
-    synchronized void executeBatch() {
+    synchronized void executeBatch() throws JdbcControllerException{
         try {
             statement.executeBatch();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new  JdbcControllerException("Error in JdbcController.executeBatch() method \n" +
+                    e.getMessage(), e);
         }
     }
 

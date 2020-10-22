@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Doctor extends Person{
+public class Doctor extends Person {
     String specialization;
 
     public Doctor(long id, String name, String surname, String patronym, String specialization) {

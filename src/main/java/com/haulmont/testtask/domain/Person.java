@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class Person implements Entity {
+public abstract class Person implements Entity, EntityFront{
     long id;
     String name;
     String surname;

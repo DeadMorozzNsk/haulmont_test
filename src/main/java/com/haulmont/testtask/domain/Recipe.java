@@ -19,4 +19,13 @@ public class Recipe implements Entity{
     Date creationDate;
     Date expirationDate;
     long priorityId;
+
+    Patient patient;
+    Doctor doctor;
+    Priority priority;
+
+    public String getPriorityName() {
+        return priority.getName();
+    }
+
 }
