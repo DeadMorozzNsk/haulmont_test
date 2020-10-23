@@ -9,17 +9,32 @@ public class RecipesView extends BasicView<Recipe> {
     public static final String NAME = "recipes";
 
     @Override
+    protected void buildView() {
+
+    }
+
+    @Override
+    protected void fillGridColumns() {
+
+    }
+
+    @Override
     protected Logger initLogger() {
         return null;
     }
 
     @Override
     protected Grid<Recipe> initGrid() {
-        return null;
+        return new Grid<>(Recipe.class);
     }
 
     @Override
     protected void setButtonsListeners() {
 
+    }
+
+    @Override
+    protected String getClassName() {
+        return Recipe.class.getName();
     }
 }

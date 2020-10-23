@@ -1,7 +1,6 @@
 package com.haulmont.testtask.dao;
 
-import com.haulmont.testtask.domain.Doctor;
-import com.haulmont.testtask.domain.Entity;
+import com.haulmont.testtask.domain.*;
 
 public class DaoFactory {
     private static DaoFactory instance = null;
@@ -27,22 +26,18 @@ public class DaoFactory {
         return new DaoPriority();
     }
 
-    public DaoEntity getDaoByEntityType(Class<?> entity) {
-        try {
-            if (Class.forName("com.haulmont.testtask.domain.Doctor").isInstance(entity)) {
-                return instance.getDaoDoctor();
-            }
-            if (Class.forName("com.haulmont.testtask.domain.Patient").isInstance(entity)) {
-                return instance.getDaoPatient();
-            }
-            if (Class.forName("com.haulmont.testtask.domain.Recipe").isInstance(entity)) {
-                return instance.getDaoRecipe();
-            }
-            if (Class.forName("com.haulmont.testtask.domain.Priority").isInstance(entity)) {
-                return instance.getDaoPriority();
-            }
-        } catch (ClassNotFoundException e) {
-            System.err.println(e.getMessage());
+    public static <T extends DaoEntity> DaoEntity<? extends Entity> getDaoByEntityType(String className) {
+        if (Doctor.class.getName().equals(className)) {
+            return instance.getDaoDoctor();
+        }
+        if (Patient.class.getName().equals(className)) {
+            return instance.getDaoPatient();
+        }
+        if (Recipe.class.getName().equals(className)) {
+            return instance.getDaoRecipe();
+        }
+        if (Priority.class.getName().equals(className)) {
+            return instance.getDaoPriority();
         }
         return null;
     }

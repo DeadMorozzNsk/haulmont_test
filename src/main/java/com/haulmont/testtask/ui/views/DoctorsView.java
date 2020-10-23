@@ -9,17 +9,32 @@ public class DoctorsView extends PersonView<Doctor> {
     public static final String NAME = "doctors";
 
     @Override
+    protected void buildView() {
+
+    }
+
+    @Override
+    protected void fillGridColumns() {
+
+    }
+
+    @Override
     protected Logger initLogger() {
         return null;
     }
 
     @Override
-    protected Grid initGrid() {
-        return null;
+    protected Grid<Doctor> initGrid() {
+        return new Grid<>(Doctor.class);
     }
 
     @Override
     protected void setButtonsListeners() {
 
+    }
+
+    @Override
+    protected String getClassName() {
+        return Doctor.class.getName();
     }
 }

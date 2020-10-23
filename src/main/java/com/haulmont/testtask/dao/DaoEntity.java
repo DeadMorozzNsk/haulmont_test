@@ -3,16 +3,16 @@ package com.haulmont.testtask.dao;
 import com.haulmont.testtask.dao.database.JdbcController;
 import com.haulmont.testtask.dao.database.JdbcControllerException;
 import com.haulmont.testtask.dao.database.JdbcDao;
-import com.haulmont.testtask.domain.Entity;
+import com.haulmont.testtask.domain.*;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DaoEntity<E extends Entity> {
+public abstract class DaoEntity<T extends Entity> {
     private static JdbcDao jdbcController = JdbcController.getInstance();
 
-    protected abstract E getEntity(ResultSet rs) throws SQLException;
+    protected abstract T getEntity(ResultSet rs) throws SQLException;
 
     protected abstract ResultSet getAllResultSet() throws JdbcControllerException;
 
@@ -24,13 +24,13 @@ public abstract class DaoEntity<E extends Entity> {
 
     protected abstract PreparedStatement getByIdPrepStatement(Object paramEntityId) throws SQLException;
 
-    protected abstract void setValues(PreparedStatement stmt, E entity) throws SQLException;
+    protected abstract void setValues(PreparedStatement stmt, T entity) throws SQLException;
 
-    public boolean add(E entity) throws DaoException {
+    public boolean add(T entity) throws DaoException {
         return getBoolResultQuery(entity, QueryType.ADD);
     }
 
-    public boolean update(E entity) throws DaoException {
+    public boolean update(T entity) throws DaoException {
         return getBoolResultQuery(entity, QueryType.UPDATE);
     }
 
@@ -61,10 +61,10 @@ public abstract class DaoEntity<E extends Entity> {
         return result;
     }
 
-    public E castParameterToEntity(Object objectEntity) {
-        E objCast = null;
+    public T castParameterToEntity(Object objectEntity) {
+        T objCast = null;
         try {
-            objCast = (E) objectEntity;
+            objCast = (T) objectEntity;
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
@@ -72,7 +72,7 @@ public abstract class DaoEntity<E extends Entity> {
     }
 
     protected PreparedStatement getAddOrUpdateStatement(Object obj, String sql) throws SQLException {
-        E docCast = castParameterToEntity(obj);
+        T docCast = castParameterToEntity(obj);
         PreparedStatement preparedStatement = jdbcController.getConnection().prepareStatement(sql);
         setValues(preparedStatement, docCast);
         return preparedStatement;
@@ -94,8 +94,8 @@ public abstract class DaoEntity<E extends Entity> {
         DELETE
     }
 
-    public List<E> getAll() throws DaoException {
-        List<E> list = null;
+    public List<T> getAll() throws DaoException {
+        List<T> list = null;
         try {
             ResultSet rs = getAllResultSet();
             list = new ArrayList<>();
@@ -110,8 +110,8 @@ public abstract class DaoEntity<E extends Entity> {
         return list;
     }
 
-    public E getById(long id) throws DaoException {
-        E entity = null;
+    public T getById(long id) throws DaoException {
+        T entity = null;
         try {
             PreparedStatement ps = getByIdPrepStatement(id);
             ResultSet rs = ps.executeQuery();

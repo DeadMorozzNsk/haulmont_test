@@ -14,10 +14,9 @@ public abstract class AbstractWindow<E extends Entity> extends Window {
     public static final String HEADER_LAYOUT = "header-layout";
     public static final String BORDERLESS = "borderless";
 
-    private enum ParameterNames {
-        CAPTION,
-        BINDER,
-        ENTITY
+    protected enum ActionType {
+        ADD,
+        EDIT
     }
 
 //    protected Map<ParameterNames, Object> getButtonParameters(String caption, Binder binder, Class<? extends Entity> entity) {
