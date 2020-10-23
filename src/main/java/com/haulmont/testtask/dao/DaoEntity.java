@@ -26,6 +26,8 @@ public abstract class DaoEntity<T extends Entity> {
 
     protected abstract void setValues(PreparedStatement stmt, T entity) throws SQLException;
 
+    /*protected abstract boolean deleteAvailable(long id);*/
+
     public boolean add(T entity) throws DaoException {
         return getBoolResultQuery(entity, QueryType.ADD);
     }
@@ -35,6 +37,7 @@ public abstract class DaoEntity<T extends Entity> {
     }
 
     public boolean delete(Long id) throws DaoException {
+        /*if (!deleteAvailable(id)) return false*/
         return getBoolResultQuery(id, QueryType.DELETE);
     }
 

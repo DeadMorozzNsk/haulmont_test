@@ -3,12 +3,13 @@ package com.haulmont.testtask.ui.views;
 import com.haulmont.testtask.dao.DaoException;
 import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.domain.Patient;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class PatientsView extends PersonView<Patient> {
@@ -22,8 +23,12 @@ public class PatientsView extends PersonView<Patient> {
     protected void buildView() {
         fillGridColumns();
         Layout buttons = getButtonsLayout();
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
         addComponents(entityGrid, buttons);
         setExpandRatio(entityGrid, 1f);
+        setButtonsListeners();
     }
 
     @Override
@@ -47,46 +52,47 @@ public class PatientsView extends PersonView<Patient> {
     }
 
     @Override
-    protected void setButtonsListeners() {
-        try {
-            entityGrid.addSelectionListener(valueChangeEvent -> {
-                if (!entityGrid.asSingleSelect().isEmpty()) {
-                    setEditDeleteButtonsEnabled(true);
-                } else {
-                    setEditDeleteButtonsEnabled(false);
-                }
-            });
-
-//            addButton.addClickListener(clickEvent ->
-//                    getUI().addWindow(new PatientWindow(entityGrid, false)));
-//
-//            editButton.addClickListener(clickEvent ->
-//                    getUI().addWindow(new PatientWindow(entityGrid, true)));
-
-            deleteButton.addClickListener(clickEvent -> {
-                if (!entityGrid.asSingleSelect().isEmpty()) {
-                    try {
-                        DaoFactory.getInstance().getDaoPatient().delete(entityGrid.asSingleSelect().getValue().getId());
-                        refreshGrid();
-                    } catch (DaoException e) {
-                        if (e.getCause().getClass().equals(java.sql.SQLIntegrityConstraintViolationException.class)) {
-                            Notification notification = new Notification("Удаление пациента невозможно, " +
-                                    "так как у него есть активные рецепты");
-                            notification.setDelayMsec(2000);
-                            notification.show(Page.getCurrent());
-                        } else {
-                            logger.severe(e.getMessage());
-                        }
-                    }
-                }
-            });
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-        }
+    protected void setAddButtonListener() {
+//        addButton.addClickListener(clickEvent -> getUI().addWindow(new PatientWindow(entityGrid, false)));
     }
 
     @Override
-    protected String getClassName() {
-        return Patient.class.getName();
+    protected void setEditButtonListener() {
+//        editButton.addClickListener(clickEvent -> getUI().addWindow(new PatientWindow(entityGrid, true)));
+    }
+
+    @Override
+    protected void setDeleteButtonListener() {
+        deleteButton.addClickListener(clickEvent -> {
+            if (!entityGrid.asSingleSelect().isEmpty()) {
+                try {
+                    DaoFactory.getInstance().getDaoPatient().delete(entityGrid.asSingleSelect().getValue().getId());
+                    refreshGrid();
+                } catch (DaoException e) {
+                    if (e.getCause().getClass().equals(java.sql.SQLIntegrityConstraintViolationException.class)) {
+                        Notification notification = new Notification("Удаление пациента невозможно, " +
+                                "так как у него есть активные рецепты");
+                        notification.setDelayMsec(2000);
+                        notification.show(Page.getCurrent());
+                    } else {
+                        logger.severe(e.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+        refreshGrid();
+    }
+
+    private void refreshGrid() {
+        try {
+            List<Patient> entities = DaoFactory.getInstance().getDaoPatient().getAll();
+            entityGrid.setItems(entities);
+        } catch (DaoException | NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 }

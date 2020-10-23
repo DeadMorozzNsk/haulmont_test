@@ -1,7 +1,5 @@
 package com.haulmont.testtask.dao;
 
-import com.haulmont.testtask.domain.*;
-
 public class DaoFactory {
     private static DaoFactory instance = null;
 
@@ -26,19 +24,4 @@ public class DaoFactory {
         return new DaoPriority();
     }
 
-    public static <T extends DaoEntity> DaoEntity<? extends Entity> getDaoByEntityType(String className) {
-        if (Doctor.class.getName().equals(className)) {
-            return instance.getDaoDoctor();
-        }
-        if (Patient.class.getName().equals(className)) {
-            return instance.getDaoPatient();
-        }
-        if (Recipe.class.getName().equals(className)) {
-            return instance.getDaoRecipe();
-        }
-        if (Priority.class.getName().equals(className)) {
-            return instance.getDaoPriority();
-        }
-        return null;
-    }
 }

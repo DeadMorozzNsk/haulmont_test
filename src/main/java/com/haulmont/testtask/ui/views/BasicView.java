@@ -1,13 +1,10 @@
 package com.haulmont.testtask.ui.views;
 
-import com.haulmont.testtask.dao.DaoException;
-import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.domain.Entity;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.*;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 public abstract class BasicView<T extends Entity> extends VerticalLayout implements View {
@@ -27,9 +24,17 @@ public abstract class BasicView<T extends Entity> extends VerticalLayout impleme
 
     protected abstract Grid<T> initGrid();
 
-    protected abstract void setButtonsListeners();
+    protected abstract void setAddButtonListener();
 
-    protected abstract String getClassName();
+    protected abstract void setEditButtonListener();
+
+    protected abstract void setDeleteButtonListener();
+
+    protected void setEntityGridListener() {
+        entityGrid.addSelectionListener(valueChangeEvent -> {
+            setEditDeleteButtonsEnabled(!entityGrid.asSingleSelect().isEmpty());
+        });
+    }
 
     protected Layout getButtonsLayout() {
         HorizontalLayout layout = new HorizontalLayout();
@@ -45,19 +50,20 @@ public abstract class BasicView<T extends Entity> extends VerticalLayout impleme
         return layout;
     }
 
+    protected void setButtonsListeners(){
+        try {
+            setEntityGridListener();
+            setAddButtonListener();
+            setEditButtonListener();
+            setDeleteButtonListener();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+        }
+    }
+
     protected void setEditDeleteButtonsEnabled(boolean isEnabled) {
         editButton.setEnabled(isEnabled);
         deleteButton.setEnabled(isEnabled);
     }
-
-    protected void refreshGrid() {
-        try {
-            List<T> entities = (List<T>) DaoFactory.getDaoByEntityType(getClassName()).getAll();
-            entityGrid.setItems(entities);
-        } catch (DaoException | NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }
