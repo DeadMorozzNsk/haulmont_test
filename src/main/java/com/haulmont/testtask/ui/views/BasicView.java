@@ -1,6 +1,7 @@
 package com.haulmont.testtask.ui.views;
 
 import com.haulmont.testtask.domain.Entity;
+import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.*;

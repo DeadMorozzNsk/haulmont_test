@@ -1,5 +1,6 @@
 package com.haulmont.testtask.domain;
 
+import com.vaadin.data.ValueProvider;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,4 +16,13 @@ public class Doctor extends Person {
         this.specialization = specialization;
     }
 
+    @Override
+    public String getPersonField() {
+        return specialization;
+    }
+
+    @Override
+    public void setPersonField(String value) {
+        this.specialization = value;
+    }
 }

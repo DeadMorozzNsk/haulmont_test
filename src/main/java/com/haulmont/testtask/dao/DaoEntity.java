@@ -26,6 +26,8 @@ public abstract class DaoEntity<T extends Entity> {
 
     protected abstract void setValues(PreparedStatement stmt, T entity) throws SQLException;
 
+    protected abstract boolean deleteAvailable(long id) throws SQLException;
+
     /*protected abstract boolean deleteAvailable(long id);*/
 
     public boolean add(T entity) throws DaoException {
@@ -83,6 +85,7 @@ public abstract class DaoEntity<T extends Entity> {
 
     protected PreparedStatement getWhereIdStatement(Object paramEntityId, String sql) throws SQLException {
         PreparedStatement ps = jdbcController.getConnection().prepareStatement(sql);
+        ps.executeQuery("SELECT * FROM RECIPES WHERE DOCTOR_ID = ?");
         try {
             ps.setLong(1, (Long) paramEntityId);
         } catch (ClassCastException e) {

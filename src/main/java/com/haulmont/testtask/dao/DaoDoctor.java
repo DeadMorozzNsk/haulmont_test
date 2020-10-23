@@ -54,4 +54,12 @@ public class DaoDoctor extends DaoEntity<Doctor> {
         stmt.setString(4, entity.getSpecialization());
     }
 
+    @Override
+    protected boolean deleteAvailable(long id) throws SQLException {
+        PreparedStatement ps = getWhereIdStatement(1,
+                "SELECT * FROM RECIPES WHERE DOCTOR_ID = ?");
+        ResultSet rs = ps.executeQuery();
+        return !rs.next();
+    }
+
 }

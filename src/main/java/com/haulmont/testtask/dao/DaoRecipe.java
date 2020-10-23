@@ -86,4 +86,9 @@ public class DaoRecipe extends DaoEntity<Recipe> {
         stmt.setDate(5, new Date(entity.getExpirationDate().getTime()));
         stmt.setLong(6, entity.getPriorityId());
     }
+
+    @Override
+    protected boolean deleteAvailable(long id) throws SQLException {
+        return true;
+    }
 }

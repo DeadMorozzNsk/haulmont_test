@@ -3,6 +3,9 @@ package com.haulmont.testtask.ui.views;
 import com.haulmont.testtask.dao.DaoException;
 import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.domain.Patient;
+import com.haulmont.testtask.ui.components.ActionType;
+import com.haulmont.testtask.ui.components.PatientEditWindow;
+import com.haulmont.testtask.ui.components.PersonEditWindow;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Grid;
@@ -53,12 +56,18 @@ public class PatientsView extends PersonView<Patient> {
 
     @Override
     protected void setAddButtonListener() {
-//        addButton.addClickListener(clickEvent -> getUI().addWindow(new PatientWindow(entityGrid, false)));
+        addButton.addClickListener(clickEvent -> {
+            getUI().addWindow(new PatientEditWindow(ActionType.ADD, entityGrid));
+            refreshGrid();
+        });
     }
 
     @Override
     protected void setEditButtonListener() {
-//        editButton.addClickListener(clickEvent -> getUI().addWindow(new PatientWindow(entityGrid, true)));
+        editButton.addClickListener(clickEvent -> {
+            getUI().addWindow(new PatientEditWindow(ActionType.EDIT, entityGrid));
+            refreshGrid();
+        });
     }
 
     @Override

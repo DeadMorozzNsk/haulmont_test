@@ -54,4 +54,9 @@ public class DaoPriority extends DaoEntity<Priority> {
         stmt.setInt(1, entity.getPriority());
         stmt.setString(2, entity.getName());
     }
+
+    @Override
+    protected boolean deleteAvailable(long id) throws SQLException {
+        return true;
+    }
 }

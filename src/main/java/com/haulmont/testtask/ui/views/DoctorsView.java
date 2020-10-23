@@ -3,6 +3,10 @@ package com.haulmont.testtask.ui.views;
 import com.haulmont.testtask.dao.DaoException;
 import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.domain.Doctor;
+import com.haulmont.testtask.domain.Patient;
+import com.haulmont.testtask.ui.components.ActionType;
+import com.haulmont.testtask.ui.components.DoctorEditWindow;
+import com.haulmont.testtask.ui.components.PersonEditWindow;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Grid;
@@ -21,12 +25,17 @@ public class DoctorsView extends PersonView<Doctor> {
 
     @Override
     protected void fillGridColumns() {
-
+        entityGrid.removeAllColumns();
+        entityGrid.addColumn(Doctor::getSurname).setCaption("Фамилия");
+        entityGrid.addColumn(Doctor::getName).setCaption("Имя");
+        entityGrid.addColumn(Doctor::getPatronym).setCaption("Отчество");
+        entityGrid.addColumn(Doctor::getSpecialization).setCaption("Специализация");
+        entityGrid.setSizeFull();
     }
 
     @Override
     protected Logger initLogger() {
-        return null;
+        return Logger.getLogger(PatientsView.class.getName());
     }
 
     @Override
@@ -36,12 +45,15 @@ public class DoctorsView extends PersonView<Doctor> {
 
     @Override
     protected void setAddButtonListener() {
-
+//        addButton.addClickListener(clickEvent -> getUI().addWindow(new PatientWindow(entityGrid, false)));
     }
 
     @Override
     protected void setEditButtonListener() {
-
+        editButton.addClickListener(clickEvent -> {
+            getUI().addWindow(new DoctorEditWindow(ActionType.EDIT, entityGrid));
+            refreshGrid();
+        });
     }
 
     @Override
