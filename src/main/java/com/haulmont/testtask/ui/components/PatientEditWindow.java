@@ -18,7 +18,19 @@ public class PatientEditWindow extends PersonEditWindow<Patient> {
         super();
         this.patientGrid = grid;
         personField.setCaption("Телефон");
+        if (action == ActionType.EDIT) {
+            patient = patientGrid.asSingleSelect().getValue();
+            setFieldsValues(patient);
+        }
         setOkButtonListener(action);
+    }
+
+    @Override
+    protected void setFieldsValues(Patient entity) {
+        nameField.setValue(entity.getName());
+        surnameField.setValue(entity.getSurname());
+        patronymField.setValue(entity.getPatronym());
+        personField.setValue(entity.getPhoneNumber());
     }
 
     protected void setOkButtonListener(ActionType action) {
@@ -26,7 +38,6 @@ public class PatientEditWindow extends PersonEditWindow<Patient> {
             setCaption("Редактирование пациента");
             if (!patientGrid.asSingleSelect().isEmpty()) {
                 try {
-                    patient = patientGrid.asSingleSelect().getValue();
                     binder.setBean(patient);
                 } catch (Exception e) {
                     logger.severe(e.getMessage());

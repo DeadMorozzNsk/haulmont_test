@@ -18,7 +18,17 @@ public class DoctorEditWindow extends PersonEditWindow<Doctor> {
         super();
         this.doctorGrid = grid;
         personField.setCaption("Специализация");
+        doctor = doctorGrid.asSingleSelect().getValue();
+        setFieldsValues(doctor);
         setOkButtonListener(action);
+    }
+
+    @Override
+    protected void setFieldsValues(Doctor entity) {
+        nameField.setValue(entity.getName());
+        surnameField.setValue(entity.getSurname());
+        patronymField.setValue(entity.getPatronym());
+        personField.setValue(entity.getSpecialization());
     }
 
     protected void setOkButtonListener(ActionType action) {
@@ -26,7 +36,7 @@ public class DoctorEditWindow extends PersonEditWindow<Doctor> {
             setCaption("Редактирование пациента");
             if (!doctorGrid.asSingleSelect().isEmpty()) {
                 try {
-                    doctor = doctorGrid.asSingleSelect().getValue();
+//                    doctor = doctorGrid.asSingleSelect().getValue();
                     binder.setBean(doctor);
                 } catch (Exception e) {
                     logger.severe(e.getMessage());

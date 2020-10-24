@@ -5,7 +5,6 @@ import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.domain.Patient;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.PatientEditWindow;
-import com.haulmont.testtask.ui.components.PersonEditWindow;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Grid;

@@ -7,7 +7,7 @@ import com.haulmont.testtask.domain.Patient;
 import com.haulmont.testtask.domain.Priority;
 import com.haulmont.testtask.domain.Recipe;
 
-import java.sql.*;;
+import java.sql.*;
 
 public class DaoRecipe extends DaoEntity<Recipe> {
 
@@ -74,7 +74,7 @@ public class DaoRecipe extends DaoEntity<Recipe> {
 
     @Override
     protected PreparedStatement getByIdPrepStatement(Object paramEntityId) throws SQLException {
-        return getWhereIdStatement(paramEntityId,"SELECT * FROM RECIPES WHERE ID = ?");
+        return getWhereIdStatement(paramEntityId, "SELECT * FROM RECIPES WHERE ID = ?");
     }
 
     @Override

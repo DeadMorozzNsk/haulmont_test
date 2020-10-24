@@ -3,24 +3,33 @@ package com.haulmont.testtask.ui.views;
 import com.haulmont.testtask.dao.DaoException;
 import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.domain.Doctor;
-import com.haulmont.testtask.domain.Patient;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.DoctorEditWindow;
-import com.haulmont.testtask.ui.components.PersonEditWindow;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.*;
 
 import java.util.List;
 import java.util.logging.Logger;
 
 public class DoctorsView extends PersonView<Doctor> {
     public static final String NAME = "doctors";
+    private Button statButton;
+
+    public DoctorsView() {
+        buildView();
+    }
 
     @Override
     protected void buildView() {
-
+        fillGridColumns();
+        Layout buttons = getButtonsLayout();
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
+        addComponents(entityGrid, buttons);
+        setExpandRatio(entityGrid, 1f);
+        setButtonsListeners();
     }
 
     @Override
@@ -35,7 +44,7 @@ public class DoctorsView extends PersonView<Doctor> {
 
     @Override
     protected Logger initLogger() {
-        return Logger.getLogger(PatientsView.class.getName());
+        return Logger.getLogger(DoctorsView.class.getName());
     }
 
     @Override
@@ -45,7 +54,10 @@ public class DoctorsView extends PersonView<Doctor> {
 
     @Override
     protected void setAddButtonListener() {
-//        addButton.addClickListener(clickEvent -> getUI().addWindow(new PatientWindow(entityGrid, false)));
+        addButton.addClickListener(clickEvent -> {
+            getUI().addWindow(new DoctorEditWindow(ActionType.ADD, entityGrid));
+            refreshGrid();
+        });
     }
 
     @Override
@@ -89,5 +101,12 @@ public class DoctorsView extends PersonView<Doctor> {
         } catch (DaoException | NullPointerException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void initStatButton() {
+        statButton = new Button("Статистика");
+        statButton.addClickListener(event -> {
+            //getUI().addWindow();
+        });
     }
 }

@@ -11,6 +11,11 @@ import java.util.List;
 
 public abstract class DaoEntity<T extends Entity> {
     private static JdbcDao jdbcController = JdbcController.getInstance();
+    private enum QueryType {
+        ADD,
+        UPDATE,
+        DELETE
+    }
 
     protected abstract T getEntity(ResultSet rs) throws SQLException;
 
@@ -43,7 +48,7 @@ public abstract class DaoEntity<T extends Entity> {
         return getBoolResultQuery(id, QueryType.DELETE);
     }
 
-    public boolean getBoolResultQuery(Object obj, QueryType queryType) throws DaoException{
+    protected boolean getBoolResultQuery(Object obj, QueryType queryType) throws DaoException{
         boolean result;
         try {
             PreparedStatement ps = null;
@@ -85,19 +90,12 @@ public abstract class DaoEntity<T extends Entity> {
 
     protected PreparedStatement getWhereIdStatement(Object paramEntityId, String sql) throws SQLException {
         PreparedStatement ps = jdbcController.getConnection().prepareStatement(sql);
-        ps.executeQuery("SELECT * FROM RECIPES WHERE DOCTOR_ID = ?");
         try {
-            ps.setLong(1, (Long) paramEntityId);
+            ps.setLong(1, (long) paramEntityId);
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
         return ps;
-    }
-
-    private enum QueryType {
-        ADD,
-        UPDATE,
-        DELETE
     }
 
     public List<T> getAll() throws DaoException {

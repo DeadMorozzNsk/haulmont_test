@@ -1,7 +1,6 @@
 package com.haulmont.testtask.ui.components;
 
 import com.haulmont.testtask.domain.Person;
-import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.*;
 
 public abstract class PersonEditWindow<T extends Person> extends AbstractWindow<T> {
@@ -57,11 +56,7 @@ public abstract class PersonEditWindow<T extends Person> extends AbstractWindow<
         surnameField = getNewTextField("Фамилия", T::getSurname, T::setSurname);
         nameField = getNewTextField("Имя", T::getName, T::setName);
         patronymField = getNewTextField("Отчество", T::getPatronym, T::setPatronym);
-        personField = getNewTextField("void", T::getPersonField, T::setPersonField);
-        binder.forField(personField)
-                .withValidator(string -> string != null && !string.isEmpty(), "Пожалуйста, введите номер телефона.")
-                .withValidator(new RegexpValidator("Введите корректный номер телефона.",
-                        "^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$"));
+        personField = getNewNumberField("void", T::getPersonField, T::setPersonField);
         layout.addComponents(surnameField, nameField, patronymField, personField);
 
         return layout;

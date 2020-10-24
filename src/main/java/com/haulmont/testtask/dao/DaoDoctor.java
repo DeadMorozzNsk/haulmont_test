@@ -5,6 +5,8 @@ import com.haulmont.testtask.dao.database.JdbcControllerException;
 import com.haulmont.testtask.domain.Doctor;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DaoDoctor extends DaoEntity<Doctor> {
     @Override
@@ -38,7 +40,7 @@ public class DaoDoctor extends DaoEntity<Doctor> {
 
     @Override
     protected PreparedStatement getDeletePrepStatement(Object paramEntityId) throws SQLException {
-        return getWhereIdStatement(paramEntityId,"DELETE FROM DOCTORS WHERE ID = ?");
+        return getWhereIdStatement(paramEntityId, "DELETE FROM DOCTORS WHERE ID = ?");
     }
 
     @Override
@@ -62,4 +64,26 @@ public class DaoDoctor extends DaoEntity<Doctor> {
         return !rs.next();
     }
 
+    public Map<Long, Integer> getRecipeStatistics() throws JdbcControllerException {
+        Map<Long, Integer> stat;
+        try {
+            stat = new HashMap<>();
+            ResultSet rs = JdbcController.getInstance().executeQuery("SELECT ID,\n" +
+                    "       ISNULL(TEMP.QUANTITY, 0)   AS QUANTITY\n" +
+                    "FROM DOCTORS\n" +
+                    "         LEFT JOIN (SELECT DOCTOR_ID,\n" +
+                    "                           COUNT(ID) AS QUANTITY\n" +
+                    "                    FROM RECIPES\n" +
+                    "                    GROUP BY DOCTOR_ID) TEMP on ID = TEMP.DOCTOR_ID");
+
+            while (rs.next()) {
+                Long id = rs.getLong("ID");
+                Integer quantity = rs.getInt("QUANTITY");
+                stat.put(id, quantity);
+            }
+        } catch (SQLException e) {
+            throw new JdbcControllerException("Error receiving statistics", e);
+        }
+        return stat;
+    }
 }

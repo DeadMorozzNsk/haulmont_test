@@ -23,9 +23,4 @@ public class Recipe implements Entity{
     Patient patient;
     Doctor doctor;
     Priority priority;
-
-    public String getPriorityName() {
-        return priority.getName();
-    }
-
 }
