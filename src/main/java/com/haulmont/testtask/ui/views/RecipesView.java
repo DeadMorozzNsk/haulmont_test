@@ -1,9 +1,7 @@
 package com.haulmont.testtask.ui.views;
 
-import com.haulmont.testtask.dao.DaoException;
+import com.haulmont.testtask.dao.exceptions.DaoException;
 import com.haulmont.testtask.dao.DaoFactory;
-import com.haulmont.testtask.dao.database.JdbcControllerException;
-import com.haulmont.testtask.domain.Doctor;
 import com.haulmont.testtask.domain.Recipe;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.RecipeEditWindow;
@@ -12,7 +10,6 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class RecipesView extends BasicView<Recipe> {
@@ -135,27 +132,5 @@ public class RecipesView extends BasicView<Recipe> {
         } catch (DaoException | NullPointerException e) {
             e.printStackTrace();
         }
-    }
-
-    private FormLayout getStatisticsFormView() {
-        FormLayout mainLayout = new FormLayout();
-        Grid<Doctor> statGrid = new Grid<>();
-        try {
-            Map<Long, Integer> stats = DaoFactory.getInstance().getDaoDoctor().getRecipeStatistics();
-            statGrid.removeAllColumns();
-            statGrid.addColumn(doctor -> doctor.getSurname() + " " + doctor.getName()).setId("fullName");
-            statGrid.addColumn(doctor -> stats.get(doctor.getId()))
-                    .setId("recipeQty")
-                    .setCaption("Количество рецептов");
-        } catch (JdbcControllerException e) {
-            e.printStackTrace();
-        }
-        statGrid.setSizeFull();
-        mainLayout.setMargin(true);
-        mainLayout.setSpacing(true);
-        mainLayout.addComponent(statGrid);
-        mainLayout.setSizeFull();
-
-        return mainLayout;
     }
 }

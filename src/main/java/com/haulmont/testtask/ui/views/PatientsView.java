@@ -1,12 +1,11 @@
 package com.haulmont.testtask.ui.views;
 
-import com.haulmont.testtask.dao.DaoException;
+import com.haulmont.testtask.dao.exceptions.DaoException;
 import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.dao.DaoPatient;
 import com.haulmont.testtask.domain.Patient;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.EntityEditWindow;
-import com.haulmont.testtask.ui.components.PatientEditWindow;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
@@ -16,11 +15,6 @@ import java.util.logging.Logger;
 
 public class PatientsView extends PersonView<Patient> {
     public static final String NAME = "patients";
-
-    protected TextField nameField = null;
-    protected TextField surnameField = null;
-    protected TextField patronymField = null;
-    protected TextField personField = null;
 
     public PatientsView() {
         buildView();
@@ -61,14 +55,14 @@ public class PatientsView extends PersonView<Patient> {
     @Override
     protected void setAddButtonListener() {
         addButton.addClickListener(clickEvent -> {
-            getUI().addWindow(new EntityEditWindow<Patient>(ActionType.ADD, this, getEditFormView()));
+            getUI().addWindow(new EntityEditWindow<>(ActionType.ADD, this, getEditFormView()));
         });
     }
 
     @Override
     protected void setEditButtonListener() {
         editButton.addClickListener(clickEvent -> {
-            getUI().addWindow(new EntityEditWindow<Patient>(ActionType.EDIT, this, getEditFormView()));
+            getUI().addWindow(new EntityEditWindow<>(ActionType.EDIT, this, getEditFormView()));
         });
     }
 

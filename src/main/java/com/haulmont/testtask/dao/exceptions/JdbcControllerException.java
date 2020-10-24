@@ -1,4 +1,4 @@
-package com.haulmont.testtask.dao.database;
+package com.haulmont.testtask.dao.exceptions;
 
 public class JdbcControllerException extends Exception {
     /**

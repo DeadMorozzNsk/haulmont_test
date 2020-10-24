@@ -1,13 +1,13 @@
 package com.haulmont.testtask.dao.database;
 
-import com.haulmont.testtask.dao.DaoException;
+import com.haulmont.testtask.dao.exceptions.DaoException;
 import com.haulmont.testtask.dao.DaoFactory;
+import com.haulmont.testtask.dao.exceptions.JdbcControllerException;
 import com.haulmont.testtask.domain.Patient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 
 

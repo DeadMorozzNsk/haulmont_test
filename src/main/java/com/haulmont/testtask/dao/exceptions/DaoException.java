@@ -1,4 +1,4 @@
-package com.haulmont.testtask.dao;
+package com.haulmont.testtask.dao.exceptions;
 
 public class DaoException extends Exception {
     public DaoException() {

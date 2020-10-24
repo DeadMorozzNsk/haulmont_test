@@ -1,5 +1,6 @@
 package com.haulmont.testtask.dao.database;
 
+import com.haulmont.testtask.dao.exceptions.JdbcControllerException;
 import lombok.Getter;
 
 import java.sql.*;
@@ -22,7 +23,7 @@ public class JdbcController implements JdbcDao {
     private final String dbLogin = resource.getString("db.login");
     private final String dbPassword = resource.getString("db.password");
 
-    JdbcController() throws JdbcControllerException{
+    JdbcController() throws JdbcControllerException {
         try {
             Class.forName(resource.getString("db.driver"));
             connection = DriverManager.getConnection(getConnectionString(), dbLogin, dbPassword);

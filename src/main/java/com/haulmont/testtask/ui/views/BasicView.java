@@ -69,7 +69,7 @@ public abstract class BasicView<T extends Entity> extends VerticalLayout impleme
         editButton = new Button("Изменить");
         editButton.setIcon(VaadinIcons.EDIT);
         deleteButton = new Button("Удалить");
-        editButton.setIcon(VaadinIcons.TRASH);
+        deleteButton.setIcon(VaadinIcons.TRASH);
         setEditDeleteButtonsEnabled(false);
         layout.addComponents(addButton, editButton, deleteButton);
         return layout;
