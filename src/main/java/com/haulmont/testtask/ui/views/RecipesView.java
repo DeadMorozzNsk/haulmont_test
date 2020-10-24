@@ -97,6 +97,31 @@ public class RecipesView extends BasicView<Recipe> {
         });
     }
 
+    @Override
+    public boolean addToDB(Recipe entity) {
+        return false;
+    }
+
+    @Override
+    public boolean updateInDB(Recipe entity) {
+        return false;
+    }
+
+    @Override
+    public Recipe getNewEntity() {
+        return new Recipe();
+    }
+
+    @Override
+    public void setEntityFieldsValues(Recipe entity) {
+
+    }
+
+    @Override
+    public void setFieldsValues(Recipe entity) {
+
+    }
+
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {

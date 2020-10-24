@@ -90,6 +90,31 @@ public class DoctorsView extends PersonView<Doctor> {
     }
 
     @Override
+    public boolean addToDB(Doctor entity) {
+        return false;
+    }
+
+    @Override
+    public boolean updateInDB(Doctor entity) {
+        return false;
+    }
+
+    @Override
+    public Doctor getNewEntity() {
+        return new Doctor();
+    }
+
+    @Override
+    public void setEntityFieldsValues(Doctor entity) {
+
+    }
+
+    @Override
+    public void setFieldsValues(Doctor entity) {
+
+    }
+
+    @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         refreshGrid();
     }

@@ -30,7 +30,7 @@ public abstract class PersonEditWindow<T extends Person> extends AbstractWindow<
         mainLayout.setSizeFull();
         mainLayout.setMargin(true);
         mainLayout.setSpacing(true);
-        FormLayout formLayout = getFormLayout();
+        FormLayout formLayout = getFormLayout("Person field caption");
         Layout buttonsLayout = getButtonsLayout();
         mainLayout.addComponents(formLayout, buttonsLayout);
         mainLayout.setExpandRatio(formLayout, 1f);
@@ -48,15 +48,15 @@ public abstract class PersonEditWindow<T extends Person> extends AbstractWindow<
         return buttonsLayout;
     }
 
-    private FormLayout getFormLayout() {
+    private FormLayout getFormLayout(String personFieldCaption) {
         FormLayout layout = new FormLayout();
         layout.setSizeFull();
         layout.setMargin(false);
         layout.setSpacing(true);
-        surnameField = getNewTextField("Фамилия", T::getSurname, T::setSurname);
-        nameField = getNewTextField("Имя", T::getName, T::setName);
-        patronymField = getNewTextField("Отчество", T::getPatronym, T::setPatronym);
-        personField = getNewNumberField("void", T::getPersonField, T::setPersonField);
+//        surnameField = getNewTextField("Фамилия", T::getSurname, T::setSurname);
+//        nameField = getNewTextField("Имя", T::getName, T::setName);
+//        patronymField = getNewTextField("Отчество", T::getPatronym, T::setPatronym);
+//        personField = getNewNumberField(personFieldCaption, T::getPersonField, T::setPersonField);
         layout.addComponents(surnameField, nameField, patronymField, personField);
 
         return layout;
