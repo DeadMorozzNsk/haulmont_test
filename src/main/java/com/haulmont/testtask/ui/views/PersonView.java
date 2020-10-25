@@ -1,6 +1,6 @@
 package com.haulmont.testtask.ui.views;
 
-import com.haulmont.testtask.domain.Person;
+import com.haulmont.testtask.backend.domain.Person;
 import com.vaadin.ui.TextField;
 
 public abstract class PersonView<T extends Person> extends BasicView<T> {

@@ -1,8 +1,8 @@
-package com.haulmont.testtask.dao;
+package com.haulmont.testtask.backend.dao;
 
-import com.haulmont.testtask.dao.database.JdbcController;
-import com.haulmont.testtask.dao.exceptions.JdbcControllerException;
-import com.haulmont.testtask.domain.Patient;
+import com.haulmont.testtask.backend.dao.database.JdbcController;
+import com.haulmont.testtask.backend.dao.exceptions.JdbcControllerException;
+import com.haulmont.testtask.backend.domain.Patient;
 
 import java.sql.*;
 

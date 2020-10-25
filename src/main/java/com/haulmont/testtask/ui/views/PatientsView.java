@@ -1,10 +1,10 @@
 package com.haulmont.testtask.ui.views;
 
-import com.haulmont.testtask.dao.DaoEntityType;
-import com.haulmont.testtask.dao.exceptions.DaoException;
-import com.haulmont.testtask.dao.DaoFactory;
-import com.haulmont.testtask.dao.DaoPatient;
-import com.haulmont.testtask.domain.Patient;
+import com.haulmont.testtask.backend.dao.DaoEntityType;
+import com.haulmont.testtask.backend.dao.exceptions.DaoException;
+import com.haulmont.testtask.backend.dao.DaoFactory;
+import com.haulmont.testtask.backend.dao.DaoPatient;
+import com.haulmont.testtask.backend.domain.Patient;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.EntityEditWindow;
 import com.vaadin.navigator.ViewChangeListener;

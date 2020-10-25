@@ -1,4 +1,4 @@
-package com.haulmont.testtask.dao.database;
+package com.haulmont.testtask.backend.dao.database;
 
 import java.sql.Connection;
 import java.sql.Statement;

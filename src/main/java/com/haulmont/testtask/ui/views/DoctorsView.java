@@ -1,11 +1,11 @@
 package com.haulmont.testtask.ui.views;
 
-import com.haulmont.testtask.dao.DaoDoctor;
-import com.haulmont.testtask.dao.DaoEntityType;
-import com.haulmont.testtask.dao.exceptions.DaoException;
-import com.haulmont.testtask.dao.DaoFactory;
-import com.haulmont.testtask.dao.exceptions.JdbcControllerException;
-import com.haulmont.testtask.domain.Doctor;
+import com.haulmont.testtask.backend.dao.DaoDoctor;
+import com.haulmont.testtask.backend.dao.DaoEntityType;
+import com.haulmont.testtask.backend.dao.exceptions.DaoException;
+import com.haulmont.testtask.backend.dao.DaoFactory;
+import com.haulmont.testtask.backend.dao.exceptions.JdbcControllerException;
+import com.haulmont.testtask.backend.domain.Doctor;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.EntityEditWindow;
 import com.haulmont.testtask.ui.components.StatsWindow;

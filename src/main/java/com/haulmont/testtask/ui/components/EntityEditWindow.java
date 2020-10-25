@@ -1,6 +1,6 @@
 package com.haulmont.testtask.ui.components;
 
-import com.haulmont.testtask.domain.Entity;
+import com.haulmont.testtask.backend.domain.Entity;
 import com.haulmont.testtask.ui.views.BasicView;
 import com.vaadin.ui.*;
 

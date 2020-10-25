@@ -1,4 +1,4 @@
-package com.haulmont.testtask.domain;
+package com.haulmont.testtask.backend.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

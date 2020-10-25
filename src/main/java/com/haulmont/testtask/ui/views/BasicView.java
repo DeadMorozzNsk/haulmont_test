@@ -1,12 +1,9 @@
 package com.haulmont.testtask.ui.views;
 
-import com.haulmont.testtask.dao.DaoEntityType;
-import com.haulmont.testtask.dao.DaoFactory;
-import com.haulmont.testtask.dao.exceptions.DaoException;
-import com.haulmont.testtask.domain.Entity;
-import com.haulmont.testtask.domain.Patient;
-import com.haulmont.testtask.domain.Person;
-import com.haulmont.testtask.domain.Recipe;
+import com.haulmont.testtask.backend.dao.DaoEntityType;
+import com.haulmont.testtask.backend.dao.DaoFactory;
+import com.haulmont.testtask.backend.dao.exceptions.DaoException;
+import com.haulmont.testtask.backend.domain.Entity;
 import com.haulmont.testtask.ui.components.Validator;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValueProvider;
@@ -18,7 +15,6 @@ import com.vaadin.server.Setter;
 import com.vaadin.ui.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public abstract class BasicView<T extends Entity>

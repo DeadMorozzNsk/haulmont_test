@@ -1,6 +1,6 @@
-package com.haulmont.testtask.dao.database;
+package com.haulmont.testtask.backend.dao.database;
 
-import com.haulmont.testtask.dao.exceptions.JdbcControllerException;
+import com.haulmont.testtask.backend.dao.exceptions.JdbcControllerException;
 import lombok.Getter;
 
 import java.sql.*;

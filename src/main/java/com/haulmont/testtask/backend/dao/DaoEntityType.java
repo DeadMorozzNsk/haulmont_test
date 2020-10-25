@@ -1,4 +1,4 @@
-package com.haulmont.testtask.dao;
+package com.haulmont.testtask.backend.dao;
 
 public enum DaoEntityType {
     DAO_DOCTOR,

@@ -1,4 +1,4 @@
-package com.haulmont.testtask.domain;
+package com.haulmont.testtask.backend.domain;
 
 import com.vaadin.data.ValueProvider;
 import lombok.Getter;
@@ -8,21 +8,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Doctor extends Person {
-    String specialization;
+public class Patient extends Person {
 
-    public Doctor(long id, String name, String surname, String patronym, String specialization) {
+    String phoneNumber;
+
+    public Patient(long id, String name, String surname, String patronym, String phoneNumber) {
         super(id, name, surname, patronym);
-        this.specialization = specialization;
+        this.phoneNumber = phoneNumber;
     }
 
     @Override
     public String getPersonField() {
-        return specialization;
+        return phoneNumber;
     }
 
     @Override
     public void setPersonField(String value) {
-        this.specialization = value;
+        this.phoneNumber = value;
     }
 }

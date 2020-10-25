@@ -1,6 +1,6 @@
-package com.haulmont.testtask.dao;
+package com.haulmont.testtask.backend.dao;
 
-import com.haulmont.testtask.domain.Entity;
+import com.haulmont.testtask.backend.domain.Entity;
 
 public class DaoFactory {
     private static DaoFactory instance = null;

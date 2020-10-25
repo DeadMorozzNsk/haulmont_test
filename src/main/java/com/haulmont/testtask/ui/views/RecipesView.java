@@ -1,13 +1,13 @@
 package com.haulmont.testtask.ui.views;
 
-import com.haulmont.testtask.dao.DaoEntityType;
-import com.haulmont.testtask.dao.DaoRecipe;
-import com.haulmont.testtask.dao.exceptions.DaoException;
-import com.haulmont.testtask.dao.DaoFactory;
-import com.haulmont.testtask.domain.Doctor;
-import com.haulmont.testtask.domain.Patient;
-import com.haulmont.testtask.domain.Priority;
-import com.haulmont.testtask.domain.Recipe;
+import com.haulmont.testtask.backend.dao.DaoEntityType;
+import com.haulmont.testtask.backend.dao.DaoRecipe;
+import com.haulmont.testtask.backend.dao.exceptions.DaoException;
+import com.haulmont.testtask.backend.dao.DaoFactory;
+import com.haulmont.testtask.backend.domain.Doctor;
+import com.haulmont.testtask.backend.domain.Patient;
+import com.haulmont.testtask.backend.domain.Priority;
+import com.haulmont.testtask.backend.domain.Recipe;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.EntityEditWindow;
 import com.haulmont.testtask.ui.components.Validator;
@@ -157,8 +157,8 @@ public class RecipesView extends BasicView<Recipe> {
     @Override
     public boolean setEntityFieldsValues(Recipe entity) {
         try {
-            if (!isFieldValid("^[а-яА-ЯёЁa-zA-Z]{0,30}$", descriptionFilterField,
-                    creationDateField, expirationDateField)) return false;
+            if (!isFieldValid("^[а-яА-ЯёЁa-zA-Z0-9:;/*\\-+\\(\\)]{0,200}$",
+                    descriptionTextArea)) return false;
             entity.setDescription(descriptionTextArea.getValue());
             entity.setCreationDate(
                     Validator.convertToDateViaInstant(creationDateField.getValue()));

@@ -1,5 +1,6 @@
 package com.haulmont.testtask.dao;
 
+import com.haulmont.testtask.backend.dao.DaoFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
