@@ -11,7 +11,16 @@ public class EntityEditWindow<T extends Entity> extends Window {
     private final Button cancelButton = new Button("Отменить");
     T entity;
 
-
+    /**
+     * конструктор формы редактирования сущности
+     * генерирует шаблон формы, в который будут подгружены
+     * элементы управления полями UI
+     *
+     * @param actionType тип действия
+     *                   добавление нового/редактирование выбранного
+     * @param basicView  родительский экран
+     * @param formLayout раскладка элементов формы
+     */
     public EntityEditWindow(ActionType actionType, BasicView<T> basicView, Layout formLayout) {
         setStyleName(Validator.MODAL_WINDOW);
         setResizable(false);
@@ -28,6 +37,13 @@ public class EntityEditWindow<T extends Entity> extends Window {
         setContent(mainFormLayout);
     }
 
+    /**
+     * получение объекта сущности в зависимости от типа операции
+     *
+     * @param actionType тип операции:
+     *                   добавление/редактирование
+     * @param basicView  Экран-родитель
+     */
     public void initEntity(ActionType actionType, BasicView<T> basicView) {
         if (actionType == ActionType.EDIT) {
             entity = basicView.getEntityGrid().asSingleSelect().getValue();
@@ -36,6 +52,13 @@ public class EntityEditWindow<T extends Entity> extends Window {
         }
     }
 
+    /**
+     * назначение обработчиков стандартных кнопок формы
+     *
+     * @param basicView  экран-родитель
+     * @param actionType тип операции:
+     *                   добавление/редактирование
+     */
     public void attachButtonsListeners(BasicView<T> basicView, ActionType actionType) {
         okButton.addClickListener(event -> {
             switch (actionType) {

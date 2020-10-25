@@ -4,6 +4,9 @@ import com.haulmont.testtask.dao.DaoEntityType;
 import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.dao.exceptions.DaoException;
 import com.haulmont.testtask.domain.Entity;
+import com.haulmont.testtask.domain.Patient;
+import com.haulmont.testtask.domain.Person;
+import com.haulmont.testtask.domain.Recipe;
 import com.haulmont.testtask.ui.components.Validator;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValueProvider;
@@ -15,10 +18,11 @@ import com.vaadin.server.Setter;
 import com.vaadin.ui.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public abstract class BasicView<T extends Entity>
-                extends VerticalLayout implements View {
+        extends VerticalLayout implements View {
     protected Grid<T> entityGrid = initGrid();
     protected Button addButton;
     protected Button editButton;
@@ -147,7 +151,8 @@ public abstract class BasicView<T extends Entity>
     /**
      * проверка текстовых полей UI на заполнение данными
      * и соответствию регулярному выражению
-     * @param regEx регулярное выражение
+     *
+     * @param regEx  регулярное выражение
      * @param fields текстовые поля
      * @return все ли поля валидны true/false
      */
@@ -193,6 +198,7 @@ public abstract class BasicView<T extends Entity>
 
     /**
      * Вывод предупреждения пользователю
+     *
      * @param text текст предупрежденич
      */
     public void sendNotification(String text) {
@@ -203,6 +209,7 @@ public abstract class BasicView<T extends Entity>
 
     /**
      * генерация раскладки кнопок Добавить/Редактировать/Удалить
+     *
      * @return раскладка UI элементов
      */
     protected Layout getButtonsLayout() {
@@ -236,6 +243,7 @@ public abstract class BasicView<T extends Entity>
     /**
      * установка активности кнопок  редактирования и удаления
      * сущностей
+     *
      * @param isEnabled сделать активными true/false
      */
     protected void setEditDeleteButtonsEnabled(boolean isEnabled) {
@@ -246,9 +254,10 @@ public abstract class BasicView<T extends Entity>
     /**
      * создает новое текстовое поле для UI с валидатором
      * текстового поля для имени
+     *
      * @param caption заголовок поля
-     * @param getter метод для получения данных
-     * @param setter метод для передачи данных
+     * @param getter  метод для получения данных
+     * @param setter  метод для передачи данных
      * @return текстовой поле UI
      */
     public TextField getNewTextField(String caption, ValueProvider<T, String> getter, Setter<T, String> setter) {
@@ -260,9 +269,10 @@ public abstract class BasicView<T extends Entity>
     /**
      * создает новое текстовое поле для UI с валидатором
      * текстового поля для цифр
+     *
      * @param caption заголовок поля
-     * @param getter метод для получения данных
-     * @param setter метод для передачи данных
+     * @param getter  метод для получения данных
+     * @param setter  метод для передачи данных
      * @return текстовой поле UI
      */
     public TextField getNewNumberField(String caption, ValueProvider<T, String> getter, Setter<T, String> setter) {
@@ -273,6 +283,7 @@ public abstract class BasicView<T extends Entity>
 
     /**
      * создает новое текстовое поле для UI без валидатора
+     *
      * @param caption заголовок поля
      * @return текстовое поле UI
      */
@@ -287,9 +298,10 @@ public abstract class BasicView<T extends Entity>
     /**
      * Установка валидаторов на текстовое поле
      * и маркера "необходимо заполнить" для текстового поля
-     * @param field поле для привязки валидации
-     * @param getter метод для получения данных
-     * @param setter метод отдачи данных из поля
+     *
+     * @param field     поле для привязки валидации
+     * @param getter    метод для получения данных
+     * @param setter    метод отдачи данных из поля
      * @param validator метод-валидатор
      */
     protected void bindNameField(TextField field, ValueProvider<T, String> getter,

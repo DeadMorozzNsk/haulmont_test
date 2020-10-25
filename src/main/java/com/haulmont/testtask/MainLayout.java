@@ -13,6 +13,9 @@ public class MainLayout extends VerticalLayout {
 
     private final Navigator navigator;
 
+    /**
+     * конструктор основного шаблона страниц приложения
+     */
     public MainLayout() {
         this.setSizeFull();
         this.setMargin(false);
@@ -35,6 +38,10 @@ public class MainLayout extends VerticalLayout {
         navigator.navigateTo(PatientsView.NAME); /* начинаем со страницы пациентов*/
     }
 
+    /**
+     * генерация раскладки элементов шапки страницы
+     * @return раскладка элементов
+     */
     private Layout createHeaderNavigationLayout() {
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setHeight("48px");
@@ -54,6 +61,10 @@ public class MainLayout extends VerticalLayout {
         return headerLayout;
     }
 
+    /**
+     * генерация основной рабочей области
+     * @return раскладка элементов UI рабочей области
+     */
     private Layout createWorkingAreaLayout() {
         VerticalLayout wArea = new VerticalLayout();
         wArea.setSizeFull();
@@ -62,6 +73,13 @@ public class MainLayout extends VerticalLayout {
         return wArea;
     }
 
+    /**
+     * создает навигационную кнопку
+     * @param caption наименование кнопки
+     * @param navigateTo путь для перенаправления
+     * @param icon иконка кнопки
+     * @return кнопка для UI
+     */
     private Button createButton(String caption, String navigateTo, VaadinIcons icon) {
         Button resultButton = new Button(caption, clickEvent -> navigator.navigateTo(navigateTo));
         if (icon != null) resultButton.setIcon(icon);

@@ -158,6 +158,12 @@ public class DoctorsView extends PersonView<Doctor> {
         });
     }
 
+    /**
+     * генерация раскладки элементов UI для передачи
+     * в конструктор формы статистики
+     *
+     * @return раскладка UI
+     */
     private Layout getStatisticsFormView() {
         Layout mainLayout = new VerticalLayout();
         Grid<Doctor> statGrid = new Grid<>();

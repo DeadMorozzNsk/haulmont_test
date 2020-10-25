@@ -19,13 +19,16 @@ public class DaoRecipe extends DaoEntity<Recipe> {
         Patient patient = null;
         Priority priority = null;
         try {
-            doctor = DaoFactory.getInstance().getDaoDoctor().getById(rs.getLong("DOCTOR_ID"));
-            patient = DaoFactory.getInstance().getDaoPatient().getById(rs.getLong("PATIENT_ID"));
-            priority = DaoFactory.getInstance().getDaoPriority().getById(rs.getLong("PRIORITY_ID"));
+            doctor = DaoFactory.getInstance().getDaoDoctor()
+                    .getById(rs.getLong("DOCTOR_ID"));
+            patient = DaoFactory.getInstance().getDaoPatient()
+                    .getById(rs.getLong("PATIENT_ID"));
+            priority = DaoFactory.getInstance().getDaoPriority()
+                    .getById(rs.getLong("PRIORITY_ID"));
         } catch (DaoException e) {
             System.err.println(e.getMessage());
         }
-        return new Recipe( /* same order as declared in class due to Lombok annotation */
+        return new Recipe(
                 rs.getLong("ID"),
                 rs.getString("DESCRIPTION"),
                 rs.getLong("PATIENT_ID"),
@@ -40,47 +43,55 @@ public class DaoRecipe extends DaoEntity<Recipe> {
 
     @Override
     protected ResultSet getAllResultSet() throws JdbcControllerException {
-        return JdbcController.getInstance().executeQuery("SELECT * FROM RECIPES");
+        return JdbcController.getInstance()
+                .executeQuery("SELECT * FROM RECIPES");
     }
 
     @Override
-    protected PreparedStatement getAddPrepStatement(Object paramEntity) throws SQLException {
+    protected PreparedStatement getAddPrepStatement(Object paramEntity)
+            throws SQLException {
         return getAddOrUpdateStatement(paramEntity,
-                "INSERT INTO RECIPES (" +
-                        "DESCRIPTION, " +
-                        "PATIENT_ID, " +
-                        "DOCTOR_ID, " +
-                        "CREATION_DATE, " +
-                        "EXPIRATION_DATE, " +
-                        "PRIORITY_ID) VALUES (?, ?, ?, ?, ?, ?)");
+                "INSERT INTO RECIPES ("
+                        + "DESCRIPTION, "
+                        + "PATIENT_ID, "
+                        + "DOCTOR_ID, "
+                        + "CREATION_DATE, "
+                        + "EXPIRATION_DATE, "
+                        + "PRIORITY_ID) VALUES (?, ?, ?, ?, ?, ?)");
     }
 
     @Override
-    protected PreparedStatement getUpdatePrepStatement(Object paramEntity) throws SQLException {
+    protected PreparedStatement getUpdatePrepStatement(Object paramEntity)
+            throws SQLException {
         PreparedStatement ps = getAddOrUpdateStatement(paramEntity,
-                "UPDATE RECIPES SET " +
-                        "DESCRIPTION = ?, " +
-                        "PATIENT_ID = ?, " +
-                        "DOCTOR_ID = ?, " +
-                        "CREATION_DATE = ?, " +
-                        "EXPIRATION_DATE = ?, " +
-                        "PRIORITY_ID = ? WHERE ID = ?");
-        ps.setLong(7, ((Recipe) paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
+                "UPDATE RECIPES SET "
+                        + "DESCRIPTION = ?, "
+                        + "PATIENT_ID = ?, "
+                        + "DOCTOR_ID = ?, "
+                        + "CREATION_DATE = ?, "
+                        + "EXPIRATION_DATE = ?, "
+                        + "PRIORITY_ID = ? WHERE ID = ?");
+        ps.setLong(7, ((Recipe) paramEntity).getId());
         return ps;
     }
 
     @Override
-    protected PreparedStatement getDeletePrepStatement(Object paramEntityId) throws SQLException {
-        return getWhereIdStatement(paramEntityId, "DELETE FROM RECIPES WHERE ID = ?");
+    protected PreparedStatement getDeletePrepStatement(Object paramEntityId)
+            throws SQLException {
+        return getWhereIdStatement(paramEntityId,
+                "DELETE FROM RECIPES WHERE ID = ?");
     }
 
     @Override
-    protected PreparedStatement getByIdPrepStatement(Object paramEntityId) throws SQLException {
-        return getWhereIdStatement(paramEntityId, "SELECT * FROM RECIPES WHERE ID = ?");
+    protected PreparedStatement getByIdPrepStatement(Object paramEntityId)
+            throws SQLException {
+        return getWhereIdStatement(paramEntityId,
+                "SELECT * FROM RECIPES WHERE ID = ?");
     }
 
     @Override
-    protected void setValues(PreparedStatement stmt, Recipe entity) throws SQLException {
+    protected void setValues(PreparedStatement stmt, Recipe entity)
+            throws SQLException {
         stmt.setString(1, entity.getDescription());
         stmt.setLong(2, entity.getPatientId());
         stmt.setLong(3, entity.getDoctorId());
@@ -90,7 +101,7 @@ public class DaoRecipe extends DaoEntity<Recipe> {
     }
 
     @Override
-    public boolean deleteAvailable(long id){
+    public boolean deleteAvailable(long id) {
         return true;
     }
 }

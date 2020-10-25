@@ -223,6 +223,11 @@ public class RecipesView extends BasicView<Recipe> {
         return formLayout;
     }
 
+    /**
+     * обработка фильтрации таблицы
+     *
+     * @param event событие для инициаци фильтрации
+     */
     private void onFilterChangeEvent(HasValue.ValueChangeEvent<String> event) {
         try {
             ListDataProvider<Recipe> dataProvider = (ListDataProvider<Recipe>) entityGrid.getDataProvider();
@@ -244,6 +249,12 @@ public class RecipesView extends BasicView<Recipe> {
         }
     }
 
+    /**
+     * генерация поля ввода данных
+     *
+     * @param caption заголовок поля
+     * @return поле даты для UI
+     */
     private DateField getNewDateField(String caption) {
         DateField result = new DateField(caption);
         result.setDateFormat("dd.MM.yyyy");

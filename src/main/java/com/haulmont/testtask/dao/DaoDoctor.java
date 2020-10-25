@@ -23,35 +23,45 @@ public class DaoDoctor extends DaoEntity<Doctor> {
 
     @Override
     protected ResultSet getAllResultSet() throws JdbcControllerException {
-        return JdbcController.getInstance().executeQuery("SELECT * FROM DOCTORS");
+        return JdbcController.getInstance()
+                .executeQuery("SELECT * FROM DOCTORS");
     }
 
     @Override
-    protected PreparedStatement getAddPrepStatement(Object paramEntity) throws SQLException {
+    protected PreparedStatement getAddPrepStatement(Object paramEntity)
+            throws SQLException {
         return getAddOrUpdateStatement(paramEntity,
-                "INSERT INTO DOCTORS (NAME, SURNAME, PATRONYM, SPECIALIZATION) VALUES (?, ?, ?, ?)");
+                "INSERT INTO DOCTORS (NAME, SURNAME, PATRONYM, SPECIALIZATION)"
+                        + "VALUES (?, ?, ?, ?)");
     }
 
     @Override
-    protected PreparedStatement getUpdatePrepStatement(Object paramEntity) throws SQLException {
+    protected PreparedStatement getUpdatePrepStatement(Object paramEntity)
+            throws SQLException {
         PreparedStatement ps = getAddOrUpdateStatement(paramEntity,
-                "UPDATE DOCTORS SET NAME = ?, SURNAME = ?, PATRONYM = ?, SPECIALIZATION = ? WHERE ID = ?");
-        ps.setLong(5, ((Doctor) paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
+                "UPDATE DOCTORS SET NAME = ?, SURNAME = ?, PATRONYM = ?,"
+                        + " SPECIALIZATION = ? WHERE ID = ?");
+        ps.setLong(5, ((Doctor) paramEntity).getId());
         return ps;
     }
 
     @Override
-    protected PreparedStatement getDeletePrepStatement(Object paramEntityId) throws SQLException {
-        return getWhereIdStatement(paramEntityId, "DELETE FROM DOCTORS WHERE ID = ?");
+    protected PreparedStatement getDeletePrepStatement(Object paramEntityId)
+            throws SQLException {
+        return getWhereIdStatement(paramEntityId,
+                "DELETE FROM DOCTORS WHERE ID = ?");
     }
 
     @Override
-    protected PreparedStatement getByIdPrepStatement(Object paramEntityId) throws SQLException {
-        return getWhereIdStatement(paramEntityId, "SELECT * FROM DOCTORS WHERE ID = ?");
+    protected PreparedStatement getByIdPrepStatement(Object paramEntityId)
+            throws SQLException {
+        return getWhereIdStatement(paramEntityId,
+                "SELECT * FROM DOCTORS WHERE ID = ?");
     }
 
     @Override
-    protected void setValues(PreparedStatement stmt, Doctor entity) throws SQLException {
+    protected void setValues(PreparedStatement stmt, Doctor entity)
+            throws SQLException {
         stmt.setString(1, entity.getName());
         stmt.setString(2, entity.getSurname());
         stmt.setString(3, entity.getPatronym());
@@ -66,17 +76,25 @@ public class DaoDoctor extends DaoEntity<Doctor> {
         return !rs.next();
     }
 
-    public Map<Long, Integer> getRecipeStatistics() throws JdbcControllerException {
+    /**
+     * Получает данные из БД о статистике виписанных рецептов
+     *
+     * @return мэппинг между ID доктора и количеством рецептов
+     * @throws JdbcControllerException
+     */
+    public Map<Long, Integer> getRecipeStatistics()
+            throws JdbcControllerException {
         Map<Long, Integer> stat;
         try {
             stat = new HashMap<>();
-            ResultSet rs = JdbcController.getInstance().executeQuery("SELECT ID,\n" +
-                    "       ISNULL(TEMP.QUANTITY, 0)   AS QUANTITY\n" +
-                    "FROM DOCTORS\n" +
-                    "         LEFT JOIN (SELECT DOCTOR_ID,\n" +
-                    "                           COUNT(ID) AS QUANTITY\n" +
-                    "                    FROM RECIPES\n" +
-                    "                    GROUP BY DOCTOR_ID) TEMP on ID = TEMP.DOCTOR_ID");
+            ResultSet rs = JdbcController.getInstance().executeQuery(
+                    "SELECT ID,\n"
+                    + "ISNULL(TEMP.QUANTITY, 0)   AS QUANTITY\n"
+                    + "FROM DOCTORS\n"
+                    + "LEFT JOIN (SELECT DOCTOR_ID,\n"
+                    + "COUNT(ID) AS QUANTITY\n"
+                    + "FROM RECIPES\n"
+                    + "GROUP BY DOCTOR_ID) TEMP on ID = TEMP.DOCTOR_ID");
 
             while (rs.next()) {
                 Long id = rs.getLong("ID");
