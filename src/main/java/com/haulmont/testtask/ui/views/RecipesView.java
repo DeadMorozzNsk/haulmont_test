@@ -10,7 +10,10 @@ import com.haulmont.testtask.domain.Priority;
 import com.haulmont.testtask.domain.Recipe;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.EntityEditWindow;
+import com.haulmont.testtask.ui.components.Validator;
+import com.vaadin.data.HasValue;
 import com.vaadin.data.converter.LocalDateToDateConverter;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 import lombok.Getter;
@@ -20,19 +23,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import static com.haulmont.testtask.ui.components.Validator.convertToDateViaInstant;
 import static com.haulmont.testtask.ui.components.Validator.convertToLocalDateViaInstant;
 
 @Getter
 public class RecipesView extends BasicView<Recipe> {
     public static final String NAME = "recipes";
     private final DaoEntityType daoType = DaoEntityType.DAO_RECIPE;
-    TextArea descriptionTextArea;
-    DateField creationDateField;
-    DateField expirationDateField;
-    ComboBox<Patient> patientComboBox;
-    ComboBox<Doctor> doctorComboBox;
-    ComboBox<Priority> priorityComboBox;
+    private TextArea descriptionTextArea;
+    private DateField creationDateField;
+    private DateField expirationDateField;
+    private ComboBox<Patient> patientComboBox;
+    private ComboBox<Doctor> doctorComboBox;
+    private ComboBox<Priority> priorityComboBox;
+
+    private TextField descriptionFilterField;
+    private TextField priorityFilterField;
+    private TextField patientFilterField;
 
     public RecipesView() {
         buildView();
@@ -40,12 +46,30 @@ public class RecipesView extends BasicView<Recipe> {
 
     @Override
     protected void buildView() {
+        Panel filterPanel = new Panel("Фильтр");
+        HorizontalLayout filterLayout = new HorizontalLayout();
+        filterLayout.setMargin(true);
+        filterLayout.setSpacing(true);
+        descriptionFilterField = new TextField();
+        descriptionFilterField.setCaption("Описание:");
+        descriptionFilterField.addValueChangeListener(this::onFilterChangeEvent);
+
+        priorityFilterField = new TextField();
+        priorityFilterField.setCaption("Приоритет:");
+        priorityFilterField.addValueChangeListener(this::onFilterChangeEvent);
+
+        patientFilterField = new TextField();
+        patientFilterField.setCaption("Пациент:");
+        patientFilterField.addValueChangeListener(this::onFilterChangeEvent);
+        filterLayout.addComponents(descriptionFilterField, priorityFilterField, patientFilterField);
+        filterPanel.setContent(filterLayout);
+
         fillGridColumns();
         Layout buttons = getButtonsLayout();
         setMargin(true);
         setSpacing(true);
         setSizeFull();
-        addComponents(entityGrid, buttons);
+        addComponents(filterPanel, entityGrid, buttons);
         setExpandRatio(entityGrid, 1f);
         setButtonsListeners();
     }
@@ -97,24 +121,10 @@ public class RecipesView extends BasicView<Recipe> {
         return daoType;
     }
 
-//    @Override
-//    protected void setDeleteButtonListener() {
-//        deleteButton.addClickListener(clickEvent -> {
-//            if (!entityGrid.asSingleSelect().isEmpty()) {
-//                try {
-//                    DaoFactory.getInstance().getDaoRecipe().delete(entityGrid.asSingleSelect().getValue().getId());
-//                    refreshGrid();
-//                } catch (DaoException e) {
-//                    logger.severe(e.getMessage());
-//                }
-//            }
-//        });
-//    }
-
     @Override
     public boolean addToDB(Recipe entity) {
         try {
-            setEntityFieldsValues(entity);
+            if (!setEntityFieldsValues(entity)) return false;
             DaoRecipe daoRecipe = DaoFactory.getInstance().getDaoRecipe();
             daoRecipe.add(entity);
         } catch (DaoException e) {
@@ -128,7 +138,7 @@ public class RecipesView extends BasicView<Recipe> {
     @Override
     public boolean updateInDB(Recipe entity) {
         try {
-            setEntityFieldsValues(entity);
+            if (!setEntityFieldsValues(entity)) return false;
             DaoRecipe daoRecipe = DaoFactory.getInstance().getDaoRecipe();
             daoRecipe.update(entity);
         } catch (DaoException e) {
@@ -145,22 +155,25 @@ public class RecipesView extends BasicView<Recipe> {
     }
 
     @Override
-    public void setEntityFieldsValues(Recipe entity) {
-        entity.setDescription(descriptionTextArea.getValue());
-        entity.setCreationDate(
-                convertToDateViaInstant(creationDateField.getValue()));
-//                Date.from(creationDateField.getValue()
-//                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        entity.setExpirationDate(
-                convertToDateViaInstant(expirationDateField.getValue()));
-//                Date.from(expirationDateField.getValue()
-//                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        entity.setDoctor(doctorComboBox.getValue());
-        entity.setDoctorId(doctorComboBox.getValue().getId());
-        entity.setPatient(patientComboBox.getValue());
-        entity.setPatientId(patientComboBox.getValue().getId());
-        entity.setPriority(priorityComboBox.getValue());
-        entity.setPriorityId(priorityComboBox.getValue().getId());
+    public boolean setEntityFieldsValues(Recipe entity) {
+        try {
+            if (!isFieldValid("^[а-яА-ЯёЁa-zA-Z]{0,30}$", descriptionFilterField,
+                    creationDateField, expirationDateField)) return false;
+            entity.setDescription(descriptionTextArea.getValue());
+            entity.setCreationDate(
+                    Validator.convertToDateViaInstant(creationDateField.getValue()));
+            entity.setExpirationDate(
+                    Validator.convertToDateViaInstant(expirationDateField.getValue()));
+            entity.setDoctor(doctorComboBox.getValue());
+            entity.setDoctorId(doctorComboBox.getValue().getId());
+            entity.setPatient(patientComboBox.getValue());
+            entity.setPatientId(patientComboBox.getValue().getId());
+            entity.setPriority(priorityComboBox.getValue());
+            entity.setPriorityId(priorityComboBox.getValue().getId());
+        } catch (NullPointerException e) {
+            sendNotification("Не все обязательные поля заполнены!");
+        }
+        return true;
     }
 
     @Override
@@ -168,8 +181,6 @@ public class RecipesView extends BasicView<Recipe> {
         descriptionTextArea.setValue(entity.getDescription());
         creationDateField.setValue(convertToLocalDateViaInstant(entity.getCreationDate()));
         expirationDateField.setValue(convertToLocalDateViaInstant(entity.getExpirationDate()));
-//                LocalDate.from(entity.getExpirationDate().toInstant())
-//                .atStartOfDay(ZoneId.systemDefault()).toLocalDate());
         doctorComboBox.setValue(entity.getDoctor());
         patientComboBox.setValue(entity.getPatient());
         priorityComboBox.setValue(entity.getPriority());
@@ -177,11 +188,9 @@ public class RecipesView extends BasicView<Recipe> {
 
 
     @Override
-    protected FormLayout getEditFormView() {
+    protected Layout getEditFormView() {
         FormLayout formLayout = new FormLayout();
-        formLayout.setSizeFull();
-        formLayout.setMargin(false);
-        formLayout.setSpacing(true);
+        formLayout.setSpacing(false);
         fillDoctorsComboBox();
 
         fillPatientsComboBox();
@@ -199,22 +208,40 @@ public class RecipesView extends BasicView<Recipe> {
                 .bind(Recipe::getCreationDate, Recipe::setCreationDate);
 
         descriptionTextArea = new TextArea("Описание");
-        descriptionTextArea.setMaxLength(140);
+        descriptionTextArea.setMaxLength(200);
         descriptionTextArea.setWidth("100%");
         binder.forField(descriptionTextArea)
                 .withValidator(string -> string != null && !string.isEmpty(), "Пожалуйста, введите описание.")
                 .asRequired()
                 .bind(Recipe::getDescription, Recipe::setDescription);
-        VerticalLayout leftSide = new VerticalLayout();
-        VerticalLayout rightSide = new VerticalLayout();
-        HorizontalLayout hBox = new HorizontalLayout();
-        leftSide.addComponents(patientComboBox, doctorComboBox);
-        rightSide.addComponents(priorityComboBox, creationDateField, expirationDateField);
-        hBox.addComponents(leftSide, rightSide);
-        VerticalLayout vBox = new VerticalLayout();
-        vBox.addComponents(hBox, descriptionTextArea);
-        formLayout.addComponent(vBox);
+
+        patientComboBox.setSizeFull();
+        doctorComboBox.setSizeFull();
+        formLayout.addComponents(patientComboBox, doctorComboBox,
+                priorityComboBox, creationDateField, expirationDateField,
+                descriptionTextArea);
         return formLayout;
+    }
+
+    private void onFilterChangeEvent(HasValue.ValueChangeEvent<String> event) {
+        try {
+            ListDataProvider<Recipe> dataProvider = (ListDataProvider<Recipe>) entityGrid.getDataProvider();
+            dataProvider.setFilter((gridItem) -> {
+                boolean patientFilter = (gridItem.getPatient().getSurname() + " " +
+                        gridItem.getPatient().getName())
+                        .toLowerCase()
+                        .contains(patientFilterField.getValue().toLowerCase());
+                boolean descriptionFilter = gridItem.getDescription()
+                        .toLowerCase()
+                        .contains(descriptionFilterField.getValue().toLowerCase());
+                boolean priorityFilter = gridItem.getPriority().getName()
+                        .toLowerCase()
+                        .contains(priorityFilterField.getValue().toLowerCase());
+                return patientFilter && descriptionFilter && priorityFilter;
+            });
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+        }
     }
 
     private DateField getNewDateField(String caption) {
@@ -286,18 +313,8 @@ public class RecipesView extends BasicView<Recipe> {
         }
     }
 
-
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         refreshGrid();
     }
-
-//    protected void refreshGrid() {
-//        try {
-//            List<Recipe> entities = DaoFactory.getInstance().getDaoByType(daoType).getAll();
-//            entityGrid.setItems(entities);
-//        } catch (DaoException | NullPointerException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

@@ -13,12 +13,12 @@ public abstract class Validator {
 
     public static boolean nameIsValid(String text) {
         String regEx = "^[а-яА-ЯёЁa-zA-Z]{0,30}$";
-        return text.matches(regEx) && text.length() > 0;
+        return text.matches(regEx);
     }
 
     public static boolean phoneIsValid(String phoneNumber) {
         String regEx = "^((8|\\+\\d{1})\\d{10})$";
-        return phoneNumber.matches(regEx) && phoneNumber.length() > 0;
+        return phoneNumber.matches(regEx);
     }
 
 

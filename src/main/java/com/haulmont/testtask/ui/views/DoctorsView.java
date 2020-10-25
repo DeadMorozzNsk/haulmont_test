@@ -80,7 +80,7 @@ public class DoctorsView extends PersonView<Doctor> {
     }
 
     @Override
-    protected FormLayout getEditFormView() {
+    protected Layout getEditFormView() {
         FormLayout formLayout = new FormLayout();
         formLayout.setSizeFull();
         formLayout.setMargin(false);
@@ -93,31 +93,10 @@ public class DoctorsView extends PersonView<Doctor> {
         return formLayout;
     }
 
-//    @Override
-//    protected void setDeleteButtonListener() {
-//        deleteButton.addClickListener(clickEvent -> {
-//            if (!entityGrid.asSingleSelect().isEmpty()) {
-//                try {
-//                    DaoFactory.getInstance().getDaoDoctor().delete(entityGrid.asSingleSelect().getValue().getId());
-//                    refreshGrid();
-//                } catch (DaoException e) {
-//                    if (e.getCause().getClass().equals(java.sql.SQLIntegrityConstraintViolationException.class)) {
-//                        Notification notification = new Notification("Удаление пациента невозможно, " +
-//                                "так как у него есть активные рецепты");
-//                        notification.setDelayMsec(2000);
-//                        notification.show(Page.getCurrent());
-//                    } else {
-//                        logger.severe(e.getMessage());
-//                    }
-//                }
-//            }
-//        });
-//    }
-
     @Override
     public boolean addToDB(Doctor entity) {
         try {
-            setEntityFieldsValues(entity);
+            if (!setEntityFieldsValues(entity)) return false;
             DaoDoctor daoDoctor = DaoFactory.getInstance().getDaoDoctor();
             daoDoctor.add(entity);
         } catch (DaoException e) {
@@ -131,7 +110,7 @@ public class DoctorsView extends PersonView<Doctor> {
     @Override
     public boolean updateInDB(Doctor entity) {
         try {
-            setEntityFieldsValues(entity);
+            if (!setEntityFieldsValues(entity)) return false;
             DaoDoctor daoDoctor = DaoFactory.getInstance().getDaoDoctor();
             daoDoctor.update(entity);
         } catch (DaoException e) {
@@ -148,11 +127,14 @@ public class DoctorsView extends PersonView<Doctor> {
     }
 
     @Override
-    public void setEntityFieldsValues(Doctor entity) {
+    public boolean setEntityFieldsValues(Doctor entity) {
+        if (!isFieldValid("^[а-яА-ЯёЁa-zA-Z]{0,30}$", surnameField,
+                nameField, patronymField, personField)) return false;
         entity.setSurname(surnameField.getValue());
         entity.setName(nameField.getValue());
         entity.setPatronym(patronymField.getValue());
         entity.setSpecialization(personField.getValue());
+        return true;
     }
 
     @Override
@@ -168,15 +150,6 @@ public class DoctorsView extends PersonView<Doctor> {
         refreshGrid();
     }
 
-//    protected void refreshGrid() {
-//        try {
-//            List<Doctor> entities = DaoFactory.getInstance().getDaoDoctor().getAll();
-//            entityGrid.setItems(entities);
-//        } catch (DaoException | NullPointerException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     protected void initStatButton() {
         statButton = new Button("Статистика");
         statButton.setIcon(VaadinIcons.LINE_BAR_CHART);
@@ -185,25 +158,23 @@ public class DoctorsView extends PersonView<Doctor> {
         });
     }
 
-    private FormLayout getStatisticsFormView() {
-        FormLayout mainLayout = new FormLayout();
+    private Layout getStatisticsFormView() {
+        Layout mainLayout = new VerticalLayout();
         Grid<Doctor> statGrid = new Grid<>();
         try {
+            List<Doctor> doctors = DaoFactory.getInstance().getDaoDoctor().getAll();
             Map<Long, Integer> stats = DaoFactory.getInstance().getDaoDoctor().getRecipeStatistics();
             statGrid.removeAllColumns();
+            statGrid.setItems(doctors);
             statGrid.addColumn(doctor ->
-                    doctor.getSurname() + " " + doctor.getName());
+                    doctor.getSurname() + " " + doctor.getName()).setCaption("Доктор");
             statGrid.addColumn(doctor ->
                     stats.get(doctor.getId())).setCaption("Количество рецептов");
-        } catch (JdbcControllerException e) {
+        } catch (JdbcControllerException | DaoException e) {
             e.printStackTrace();
         }
         statGrid.setSizeFull();
-        mainLayout.setMargin(true);
-        mainLayout.setSpacing(true);
         mainLayout.addComponent(statGrid);
-        mainLayout.setSizeFull();
-
         return mainLayout;
     }
 }

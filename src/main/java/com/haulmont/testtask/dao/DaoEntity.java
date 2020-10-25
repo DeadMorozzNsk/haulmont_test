@@ -33,7 +33,7 @@ public abstract class DaoEntity<T extends Entity> {
 
     protected abstract void setValues(PreparedStatement stmt, T entity) throws SQLException;
 
-    protected abstract boolean deleteAvailable(long id) throws SQLException;
+    public abstract boolean deleteAvailable(long id) throws SQLException;
 
     /*protected abstract boolean deleteAvailable(long id);*/
 

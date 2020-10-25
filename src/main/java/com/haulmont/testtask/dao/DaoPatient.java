@@ -58,7 +58,7 @@ public class DaoPatient extends DaoEntity<Patient> {
     }
 
     @Override
-    protected boolean deleteAvailable(long id) throws SQLException {
+    public boolean deleteAvailable(long id) throws SQLException {
         PreparedStatement ps = getWhereIdStatement(1,
                 "SELECT * FROM RECIPES WHERE PATIENT_ID = ?");
         ResultSet rs = ps.executeQuery();

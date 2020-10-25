@@ -9,16 +9,4 @@ public abstract class PersonView<T extends Person> extends BasicView<T> {
     protected TextField patronymField = null;
     protected TextField personField = null;
 
-//    @Override
-//    protected void buildView() {
-//        fillGridColumns();
-//        Layout buttons = getButtonsLayout();
-//        setMargin(true);
-//        setSpacing(true);
-//        setSizeFull();
-//        addComponents(entityGrid, buttons);
-//        setExpandRatio(entityGrid, 1f);
-//        setButtonsListeners();
-//    }
-//
 }

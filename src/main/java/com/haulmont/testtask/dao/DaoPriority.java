@@ -57,7 +57,7 @@ public class DaoPriority extends DaoEntity<Priority> {
     }
 
     @Override
-    protected boolean deleteAvailable(long id) throws SQLException {
+    public boolean deleteAvailable(long id) {
         return true;
     }
 }

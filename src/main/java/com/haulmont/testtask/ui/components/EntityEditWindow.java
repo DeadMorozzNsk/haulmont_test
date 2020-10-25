@@ -7,18 +7,17 @@ import com.vaadin.ui.*;
 public class EntityEditWindow<T extends Entity> extends Window {
     VerticalLayout mainFormLayout = new VerticalLayout();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    private Button okButton = new Button("ОК");
-    private Button cancelButton = new Button("Отменить");
+    private final Button okButton = new Button("ОК");
+    private final Button cancelButton = new Button("Отменить");
     T entity;
 
 
-    public EntityEditWindow(ActionType actionType, BasicView<T> basicView, FormLayout formLayout) {
+    public EntityEditWindow(ActionType actionType, BasicView<T> basicView, Layout formLayout) {
         setStyleName(Validator.MODAL_WINDOW);
         setResizable(false);
         setModal(true);
-        setWidth("450px");
-        setHeight("450px");
-        formLayout.setMargin(true);
+        setClosable(false);
+        setWidth("600px");
         initEntity(actionType, basicView);
         attachButtonsListeners(basicView, actionType);
         if (actionType == ActionType.EDIT) basicView.setFieldsValues(entity);
@@ -30,7 +29,7 @@ public class EntityEditWindow<T extends Entity> extends Window {
     }
 
     public void initEntity(ActionType actionType, BasicView<T> basicView) {
-        if (actionType == ActionType.EDIT ) {
+        if (actionType == ActionType.EDIT) {
             entity = basicView.getEntityGrid().asSingleSelect().getValue();
         } else {
             entity = basicView.getNewEntity();
@@ -41,7 +40,7 @@ public class EntityEditWindow<T extends Entity> extends Window {
         okButton.addClickListener(event -> {
             switch (actionType) {
                 case ADD:
-                    if (!basicView.addToDB(entity))return;
+                    if (!basicView.addToDB(entity)) return;
                     break;
                 case EDIT:
                     if (!basicView.updateInDB(entity)) return;

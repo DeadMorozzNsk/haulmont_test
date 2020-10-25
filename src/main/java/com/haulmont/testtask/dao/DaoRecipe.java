@@ -7,7 +7,6 @@ import com.haulmont.testtask.domain.Doctor;
 import com.haulmont.testtask.domain.Patient;
 import com.haulmont.testtask.domain.Priority;
 import com.haulmont.testtask.domain.Recipe;
-import com.haulmont.testtask.ui.components.Validator;
 
 import java.sql.*;
 
@@ -91,7 +90,7 @@ public class DaoRecipe extends DaoEntity<Recipe> {
     }
 
     @Override
-    protected boolean deleteAvailable(long id) throws SQLException {
+    public boolean deleteAvailable(long id){
         return true;
     }
 }

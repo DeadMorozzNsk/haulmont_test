@@ -8,10 +8,8 @@ import com.haulmont.testtask.domain.Patient;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.EntityEditWindow;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 public class PatientsView extends PersonView<Patient> {
@@ -74,7 +72,7 @@ public class PatientsView extends PersonView<Patient> {
     }
 
     @Override
-    protected FormLayout getEditFormView() {
+    protected Layout getEditFormView() {
         FormLayout formLayout = new FormLayout();
         formLayout.setSizeFull();
         formLayout.setMargin(false);
@@ -87,31 +85,10 @@ public class PatientsView extends PersonView<Patient> {
         return formLayout;
     }
 
-//    @Override
-//    protected void setDeleteButtonListener() {
-//        deleteButton.addClickListener(clickEvent -> {
-//            if (!entityGrid.asSingleSelect().isEmpty()) {
-//                try {
-//                    DaoFactory.getInstance().getDaoPatient().delete(entityGrid.asSingleSelect().getValue().getId());
-//                    refreshGrid();
-//                } catch (DaoException e) {
-//                    if (e.getCause().getClass().equals(java.sql.SQLIntegrityConstraintViolationException.class)) {
-//                        Notification notification = new Notification("Удаление пациента невозможно, " +
-//                                "так как у него есть активные рецепты");
-//                        notification.setDelayMsec(2000);
-//                        notification.show(Page.getCurrent());
-//                    } else {
-//                        logger.severe(e.getMessage());
-//                    }
-//                }
-//            }
-//        });
-//    }
-
     @Override
     public boolean addToDB(Patient entity) {
         try {
-            setEntityFieldsValues(entity);
+            if (!setEntityFieldsValues(entity)) return false;
             DaoPatient patientDao = DaoFactory.getInstance().getDaoPatient();
             patientDao.add(entity);
         } catch (DaoException e) {
@@ -125,7 +102,7 @@ public class PatientsView extends PersonView<Patient> {
     @Override
     public boolean updateInDB(Patient entity) {
         try {
-            setEntityFieldsValues(entity);
+            if (!setEntityFieldsValues(entity)) return false;
             DaoPatient patientDao = DaoFactory.getInstance().getDaoPatient();
             patientDao.update(entity);
         } catch (DaoException e) {
@@ -137,11 +114,16 @@ public class PatientsView extends PersonView<Patient> {
     }
 
     @Override
-    public void setEntityFieldsValues(Patient entity) {
+    public boolean setEntityFieldsValues(Patient entity) {
+        if (!isFieldValid("^[а-яА-ЯёЁa-zA-Z]{0,30}$", surnameField,
+                nameField, patronymField)) return false;
+        if (!isFieldValid("^((8|\\+\\d{1})\\d{10})$",
+                personField)) return false;
         entity.setSurname(surnameField.getValue());
         entity.setName(nameField.getValue());
         entity.setPatronym(patronymField.getValue());
         entity.setPhoneNumber(personField.getValue());
+        return true;
     }
 
     @Override
@@ -154,8 +136,6 @@ public class PatientsView extends PersonView<Patient> {
 
     @Override
     public Patient getNewEntity() {
-//        Patient p = new Patient();
-//        binder.setBean(p);
         return new Patient();
     }
 
@@ -163,13 +143,4 @@ public class PatientsView extends PersonView<Patient> {
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         refreshGrid();
     }
-
-//    protected void refreshGrid() {
-//        try {
-//            List<Patient> entities = DaoFactory.getInstance().getDaoPatient().getAll();
-//            entityGrid.setItems(entities);
-//        } catch (DaoException | NullPointerException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
