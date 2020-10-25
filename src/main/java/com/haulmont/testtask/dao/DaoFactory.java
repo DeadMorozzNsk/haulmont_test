@@ -1,5 +1,7 @@
 package com.haulmont.testtask.dao;
 
+import com.haulmont.testtask.domain.Entity;
+
 public class DaoFactory {
     private static DaoFactory instance = null;
 
@@ -22,6 +24,16 @@ public class DaoFactory {
 
     public DaoPriority getDaoPriority() {
         return new DaoPriority();
+    }
+
+    public DaoEntity<? extends Entity> getDaoByType(DaoEntityType type){
+        switch (type) {
+            case DAO_DOCTOR: return getInstance().getDaoDoctor();
+            case DAO_PATIENT: return getInstance().getDaoPatient();
+            case DAO_RECIPE: return getInstance().getDaoRecipe();
+            case DAO_PRIORITY: return getInstance().getDaoPriority();
+        }
+        return null;
     }
 
 }

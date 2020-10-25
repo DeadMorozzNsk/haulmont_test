@@ -7,10 +7,12 @@ import com.haulmont.testtask.domain.Doctor;
 import com.haulmont.testtask.domain.Patient;
 import com.haulmont.testtask.domain.Priority;
 import com.haulmont.testtask.domain.Recipe;
+import com.haulmont.testtask.ui.components.Validator;
 
 import java.sql.*;
 
 public class DaoRecipe extends DaoEntity<Recipe> {
+    protected DaoEntityType type = DaoEntityType.DAO_RECIPE;
 
     @Override
     protected Recipe getEntity(ResultSet rs) throws SQLException {
@@ -63,8 +65,8 @@ public class DaoRecipe extends DaoEntity<Recipe> {
                         "DOCTOR_ID = ?, " +
                         "CREATION_DATE = ?, " +
                         "EXPIRATION_DATE = ?, " +
-                        "PRIORITY_ID = ?, WHERE ID = ?");
-        ps.setLong(7, ((Doctor) paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
+                        "PRIORITY_ID = ? WHERE ID = ?");
+        ps.setLong(7, ((Recipe) paramEntity).getId()); /* Class was casted in method getAddOrUpdateStatement */
         return ps;
     }
 

@@ -1,5 +1,6 @@
 package com.haulmont.testtask.ui.views;
 
+import com.haulmont.testtask.dao.DaoEntityType;
 import com.haulmont.testtask.dao.exceptions.DaoException;
 import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.dao.DaoPatient;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 
 public class PatientsView extends PersonView<Patient> {
     public static final String NAME = "patients";
+    private final DaoEntityType daoType = DaoEntityType.DAO_PATIENT;
 
     public PatientsView() {
         buildView();
@@ -66,7 +68,13 @@ public class PatientsView extends PersonView<Patient> {
         });
     }
 
-    private FormLayout getEditFormView() {
+    @Override
+    protected DaoEntityType getDaoEntityType() {
+        return daoType;
+    }
+
+    @Override
+    protected FormLayout getEditFormView() {
         FormLayout formLayout = new FormLayout();
         formLayout.setSizeFull();
         formLayout.setMargin(false);
@@ -79,26 +87,26 @@ public class PatientsView extends PersonView<Patient> {
         return formLayout;
     }
 
-    @Override
-    protected void setDeleteButtonListener() {
-        deleteButton.addClickListener(clickEvent -> {
-            if (!entityGrid.asSingleSelect().isEmpty()) {
-                try {
-                    DaoFactory.getInstance().getDaoPatient().delete(entityGrid.asSingleSelect().getValue().getId());
-                    refreshGrid();
-                } catch (DaoException e) {
-                    if (e.getCause().getClass().equals(java.sql.SQLIntegrityConstraintViolationException.class)) {
-                        Notification notification = new Notification("Удаление пациента невозможно, " +
-                                "так как у него есть активные рецепты");
-                        notification.setDelayMsec(2000);
-                        notification.show(Page.getCurrent());
-                    } else {
-                        logger.severe(e.getMessage());
-                    }
-                }
-            }
-        });
-    }
+//    @Override
+//    protected void setDeleteButtonListener() {
+//        deleteButton.addClickListener(clickEvent -> {
+//            if (!entityGrid.asSingleSelect().isEmpty()) {
+//                try {
+//                    DaoFactory.getInstance().getDaoPatient().delete(entityGrid.asSingleSelect().getValue().getId());
+//                    refreshGrid();
+//                } catch (DaoException e) {
+//                    if (e.getCause().getClass().equals(java.sql.SQLIntegrityConstraintViolationException.class)) {
+//                        Notification notification = new Notification("Удаление пациента невозможно, " +
+//                                "так как у него есть активные рецепты");
+//                        notification.setDelayMsec(2000);
+//                        notification.show(Page.getCurrent());
+//                    } else {
+//                        logger.severe(e.getMessage());
+//                    }
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public boolean addToDB(Patient entity) {
@@ -156,12 +164,12 @@ public class PatientsView extends PersonView<Patient> {
         refreshGrid();
     }
 
-    private void refreshGrid() {
-        try {
-            List<Patient> entities = DaoFactory.getInstance().getDaoPatient().getAll();
-            entityGrid.setItems(entities);
-        } catch (DaoException | NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
+//    protected void refreshGrid() {
+//        try {
+//            List<Patient> entities = DaoFactory.getInstance().getDaoPatient().getAll();
+//            entityGrid.setItems(entities);
+//        } catch (DaoException | NullPointerException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

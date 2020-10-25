@@ -1,21 +1,25 @@
 package com.haulmont.testtask.ui.views;
 
+import com.haulmont.testtask.dao.DaoEntityType;
+import com.haulmont.testtask.dao.DaoFactory;
+import com.haulmont.testtask.dao.exceptions.DaoException;
 import com.haulmont.testtask.domain.Entity;
-import com.haulmont.testtask.domain.Patient;
-import com.haulmont.testtask.ui.components.AbstractWindow;
+import com.haulmont.testtask.domain.Recipe;
+import com.haulmont.testtask.ui.components.Validator;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValueProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.server.Page;
 import com.vaadin.server.SerializablePredicate;
 import com.vaadin.server.Setter;
 import com.vaadin.ui.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public abstract class BasicView<T extends Entity> extends VerticalLayout implements View {
     protected Grid<T> entityGrid = initGrid();
-
     protected Button addButton;
     protected Button editButton;
     protected Button deleteButton;
@@ -35,7 +39,38 @@ public abstract class BasicView<T extends Entity> extends VerticalLayout impleme
 
     protected abstract void setEditButtonListener();
 
-    protected abstract void setDeleteButtonListener();
+    protected abstract DaoEntityType getDaoEntityType();
+
+    protected void setDeleteButtonListener() {
+        deleteButton.addClickListener(clickEvent -> {
+            if (!entityGrid.asSingleSelect().isEmpty()) {
+                try {
+                    DaoFactory.getInstance().getDaoByType(getDaoEntityType()).delete(entityGrid.asSingleSelect().getValue().getId());
+                    refreshGrid();
+                } catch (DaoException e) {
+                    if (e.getCause().getClass().equals(java.sql.SQLIntegrityConstraintViolationException.class)) {
+                        Notification notification = new Notification("Удаление объекта невозможно! " +
+                                "Имеются рецепты, в которых он зайдествован.");
+                        notification.setDelayMsec(2000);
+                        notification.show(Page.getCurrent());
+                    } else {
+                        logger.severe(e.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
+    protected void refreshGrid() {
+        try {
+            List<? extends Entity> entities = DaoFactory.getInstance().getDaoByType(getDaoEntityType()).getAll();
+            entityGrid.setItems((List<T>) entities);
+        } catch (DaoException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    ;
 
     public abstract boolean addToDB(T entity);
 
@@ -46,6 +81,8 @@ public abstract class BasicView<T extends Entity> extends VerticalLayout impleme
     public abstract void setEntityFieldsValues(T entity);
 
     public abstract void setFieldsValues(T entity);
+
+    protected abstract FormLayout getEditFormView();
 
     public BasicView() {
         binder = new Binder<>();
@@ -75,7 +112,7 @@ public abstract class BasicView<T extends Entity> extends VerticalLayout impleme
         return layout;
     }
 
-    protected void setButtonsListeners(){
+    protected void setButtonsListeners() {
         try {
             setEntityGridListener();
             setAddButtonListener();
@@ -93,13 +130,13 @@ public abstract class BasicView<T extends Entity> extends VerticalLayout impleme
 
     public TextField getNewTextField(String caption, ValueProvider<T, String> getter, Setter<T, String> setter) {
         TextField resultField = getNewInputField(caption, getter, setter);
-        bindNameField(resultField, getter, setter, AbstractWindow::nameIsValid);
+        bindNameField(resultField, getter, setter, Validator::nameIsValid);
         return resultField;
     }
 
     public TextField getNewNumberField(String caption, ValueProvider<T, String> getter, Setter<T, String> setter) {
         TextField resultField = getNewInputField(caption, getter, setter);
-        bindNameField(resultField, getter, setter, AbstractWindow::phoneIsValid);
+        bindNameField(resultField, getter, setter, Validator::phoneIsValid);
         return resultField;
     }
 

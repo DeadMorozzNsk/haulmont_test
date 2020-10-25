@@ -1,15 +1,16 @@
 package com.haulmont.testtask.ui.views;
 
 import com.haulmont.testtask.dao.DaoDoctor;
+import com.haulmont.testtask.dao.DaoEntityType;
 import com.haulmont.testtask.dao.exceptions.DaoException;
 import com.haulmont.testtask.dao.DaoFactory;
 import com.haulmont.testtask.dao.exceptions.JdbcControllerException;
 import com.haulmont.testtask.domain.Doctor;
 import com.haulmont.testtask.ui.components.ActionType;
 import com.haulmont.testtask.ui.components.EntityEditWindow;
+import com.haulmont.testtask.ui.components.StatsWindow;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 
 public class DoctorsView extends PersonView<Doctor> {
     public static final String NAME = "doctors";
+    private final DaoEntityType daoType = DaoEntityType.DAO_DOCTOR;
     private Button statButton;
 
     public DoctorsView() {
@@ -72,7 +74,13 @@ public class DoctorsView extends PersonView<Doctor> {
         });
     }
 
-    private FormLayout getEditFormView() {
+    @Override
+    protected DaoEntityType getDaoEntityType() {
+        return daoType;
+    }
+
+    @Override
+    protected FormLayout getEditFormView() {
         FormLayout formLayout = new FormLayout();
         formLayout.setSizeFull();
         formLayout.setMargin(false);
@@ -85,26 +93,26 @@ public class DoctorsView extends PersonView<Doctor> {
         return formLayout;
     }
 
-    @Override
-    protected void setDeleteButtonListener() {
-        deleteButton.addClickListener(clickEvent -> {
-            if (!entityGrid.asSingleSelect().isEmpty()) {
-                try {
-                    DaoFactory.getInstance().getDaoDoctor().delete(entityGrid.asSingleSelect().getValue().getId());
-                    refreshGrid();
-                } catch (DaoException e) {
-                    if (e.getCause().getClass().equals(java.sql.SQLIntegrityConstraintViolationException.class)) {
-                        Notification notification = new Notification("Удаление пациента невозможно, " +
-                                "так как у него есть активные рецепты");
-                        notification.setDelayMsec(2000);
-                        notification.show(Page.getCurrent());
-                    } else {
-                        logger.severe(e.getMessage());
-                    }
-                }
-            }
-        });
-    }
+//    @Override
+//    protected void setDeleteButtonListener() {
+//        deleteButton.addClickListener(clickEvent -> {
+//            if (!entityGrid.asSingleSelect().isEmpty()) {
+//                try {
+//                    DaoFactory.getInstance().getDaoDoctor().delete(entityGrid.asSingleSelect().getValue().getId());
+//                    refreshGrid();
+//                } catch (DaoException e) {
+//                    if (e.getCause().getClass().equals(java.sql.SQLIntegrityConstraintViolationException.class)) {
+//                        Notification notification = new Notification("Удаление пациента невозможно, " +
+//                                "так как у него есть активные рецепты");
+//                        notification.setDelayMsec(2000);
+//                        notification.show(Page.getCurrent());
+//                    } else {
+//                        logger.severe(e.getMessage());
+//                    }
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public boolean addToDB(Doctor entity) {
@@ -160,20 +168,20 @@ public class DoctorsView extends PersonView<Doctor> {
         refreshGrid();
     }
 
-    private void refreshGrid() {
-        try {
-            List<Doctor> entities = DaoFactory.getInstance().getDaoDoctor().getAll();
-            entityGrid.setItems(entities);
-        } catch (DaoException | NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
+//    protected void refreshGrid() {
+//        try {
+//            List<Doctor> entities = DaoFactory.getInstance().getDaoDoctor().getAll();
+//            entityGrid.setItems(entities);
+//        } catch (DaoException | NullPointerException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     protected void initStatButton() {
         statButton = new Button("Статистика");
         statButton.setIcon(VaadinIcons.LINE_BAR_CHART);
         statButton.addClickListener(event -> {
-            //getUI().addWindow();
+            getUI().addWindow(new StatsWindow(getStatisticsFormView()));
         });
     }
 
@@ -183,10 +191,10 @@ public class DoctorsView extends PersonView<Doctor> {
         try {
             Map<Long, Integer> stats = DaoFactory.getInstance().getDaoDoctor().getRecipeStatistics();
             statGrid.removeAllColumns();
-            statGrid.addColumn(doctor -> doctor.getSurname() + " " + doctor.getName()).setId("fullName");
-            statGrid.addColumn(doctor -> stats.get(doctor.getId()))
-                    .setId("recipeQty")
-                    .setCaption("Количество рецептов");
+            statGrid.addColumn(doctor ->
+                    doctor.getSurname() + " " + doctor.getName());
+            statGrid.addColumn(doctor ->
+                    stats.get(doctor.getId())).setCaption("Количество рецептов");
         } catch (JdbcControllerException e) {
             e.printStackTrace();
         }

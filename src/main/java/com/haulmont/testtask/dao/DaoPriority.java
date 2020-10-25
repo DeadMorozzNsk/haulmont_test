@@ -7,6 +7,7 @@ import com.haulmont.testtask.domain.Priority;
 import java.sql.*;
 
 public class DaoPriority extends DaoEntity<Priority> {
+    protected DaoEntityType type = DaoEntityType.DAO_PRIORITY;
 
     @Override
     protected Priority getEntity(ResultSet rs) throws SQLException {

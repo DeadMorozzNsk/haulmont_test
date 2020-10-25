@@ -1,6 +1,6 @@
 package com.haulmont.testtask;
 
-import com.haulmont.testtask.ui.components.AbstractWindow;
+import com.haulmont.testtask.ui.components.Validator;
 import com.haulmont.testtask.ui.views.DoctorsView;
 import com.haulmont.testtask.ui.views.PatientsView;
 import com.haulmont.testtask.ui.views.RecipesView;
@@ -28,9 +28,9 @@ public class MainLayout extends VerticalLayout {
         navigator.addView(PatientsView.NAME, new PatientsView());
         navigator.addView(RecipesView.NAME, new RecipesView());
 
-        pageHeader.setStyleName(AbstractWindow.HEADER_LAYOUT);
-        this.setStyleName(AbstractWindow.VIEW_LAYOUT);
-        workArea.setStyleName(AbstractWindow.VIEW_LAYOUT);
+        pageHeader.setStyleName(Validator.HEADER_LAYOUT);
+        this.setStyleName(Validator.VIEW_LAYOUT);
+        workArea.setStyleName(Validator.VIEW_LAYOUT);
 
         navigator.navigateTo(PatientsView.NAME); /* начинаем со страницы пациентов*/
     }
@@ -66,7 +66,7 @@ public class MainLayout extends VerticalLayout {
         Button resultButton = new Button(caption, clickEvent -> navigator.navigateTo(navigateTo));
         if (icon != null) resultButton.setIcon(icon);
         resultButton.setHeight("100%");
-        resultButton.addStyleName(AbstractWindow.BORDERLESS);
+        resultButton.addStyleName(Validator.BORDERLESS);
         return resultButton;
     }
 }

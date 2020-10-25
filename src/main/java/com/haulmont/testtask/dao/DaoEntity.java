@@ -12,6 +12,7 @@ import java.util.List;
 
 public abstract class DaoEntity<T extends Entity> {
     private static JdbcDao jdbcController = JdbcController.getInstance();
+    protected DaoEntityType type;
     private enum QueryType {
         ADD,
         UPDATE,

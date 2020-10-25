@@ -13,11 +13,11 @@ public class EntityEditWindow<T extends Entity> extends Window {
 
 
     public EntityEditWindow(ActionType actionType, BasicView<T> basicView, FormLayout formLayout) {
-        setStyleName(AbstractWindow.MODAL_WINDOW);
+        setStyleName(Validator.MODAL_WINDOW);
         setResizable(false);
         setModal(true);
         setWidth("450px");
-        setHeight("360px");
+        setHeight("450px");
         formLayout.setMargin(true);
         initEntity(actionType, basicView);
         attachButtonsListeners(basicView, actionType);

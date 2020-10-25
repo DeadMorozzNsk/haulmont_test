@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DaoDoctor extends DaoEntity<Doctor> {
+    protected DaoEntityType type = DaoEntityType.DAO_DOCTOR;
+
     @Override
     protected Doctor getEntity(ResultSet rs) throws SQLException {
         return new Doctor(

@@ -1,22 +1,20 @@
 package com.haulmont.testtask.ui.components;
 
-import com.haulmont.testtask.domain.Recipe;
+import com.vaadin.ui.*;
 
-public class StatsWindow extends AbstractWindow<Recipe> {
+public class StatsWindow extends Window {
+    Button closeButton = new Button("Закрыть");
 
-    public StatsWindow() {
-
-    }
-
-    @Override
-    protected void setOkButtonListener() {
-        this.acceptButton.addClickListener(clickEvent -> {
-            close();
-        });
-    }
-
-    @Override
-    protected void setFieldsValues(Recipe entity) {
-
+    public StatsWindow(FormLayout mainFormLayout) {
+        setStyleName(Validator.MODAL_WINDOW);
+        HorizontalLayout hBox = new HorizontalLayout();
+        hBox.addComponent(closeButton);
+        closeButton.addClickListener(clickEvent -> close());
+        mainFormLayout.addComponent(hBox);
+        setResizable(false);
+        setModal(true);
+        setWidth("450px");
+        setHeight("450px");
+        setContent(mainFormLayout);
     }
 }

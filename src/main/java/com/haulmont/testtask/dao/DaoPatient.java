@@ -7,6 +7,7 @@ import com.haulmont.testtask.domain.Patient;
 import java.sql.*;
 
 public class DaoPatient extends DaoEntity<Patient> {
+    protected DaoEntityType type = DaoEntityType.DAO_PATIENT;
 
     @Override
     protected Patient getEntity(ResultSet rs) throws SQLException {
