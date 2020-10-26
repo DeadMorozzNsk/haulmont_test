@@ -4,6 +4,8 @@ import com.vaadin.data.ValueProvider;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public abstract class Person implements Entity{
@@ -23,5 +25,16 @@ public abstract class Person implements Entity{
         this.name = name;
         this.surname = surname;
         this.patronym = patronym;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return id == person.id &&
+                name.equals(person.name) &&
+                surname.equals(person.surname) &&
+                patronym.equals(person.patronym);
     }
 }

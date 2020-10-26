@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,5 +27,14 @@ public class Patient extends Person {
     @Override
     public void setPersonField(String value) {
         this.phoneNumber = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Patient patient = (Patient) o;
+        return phoneNumber.equals(patient.phoneNumber);
     }
 }

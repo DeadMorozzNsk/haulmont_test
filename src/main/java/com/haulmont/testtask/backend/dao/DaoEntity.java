@@ -5,7 +5,6 @@ import com.haulmont.testtask.backend.dao.exceptions.DaoException;
 import com.haulmont.testtask.backend.dao.exceptions.JdbcControllerException;
 import com.haulmont.testtask.backend.domain.Entity;
 import com.haulmont.testtask.backend.dao.database.JdbcController;
-import com.haulmont.testtask.domain.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -131,7 +130,7 @@ public abstract class DaoEntity<T extends Entity> {
         return getBoolResultQuery(id, QueryType.DELETE);
     }
 
-    protected boolean getBoolResultQuery(Object obj, QueryType queryType) throws DaoException {
+    private boolean getBoolResultQuery(Object obj, QueryType queryType) throws DaoException {
         boolean result;
         try {
             PreparedStatement ps = null;
