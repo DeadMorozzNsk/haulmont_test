@@ -16,6 +16,7 @@ public class JdbcTest {
         } catch (JdbcControllerException e) {
             e.printStackTrace();
         }
+        Assertions.assertNotNull(jdbcController);
         Connection connection = jdbcController.getConnection();
         Assertions.assertNotNull(connection);
     }

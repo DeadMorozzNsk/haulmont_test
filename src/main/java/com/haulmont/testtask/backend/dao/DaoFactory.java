@@ -5,6 +5,9 @@ import com.haulmont.testtask.backend.domain.Entity;
 public class DaoFactory {
     private static DaoFactory instance = null;
 
+    private DaoFactory() {
+    }
+
     public static synchronized DaoFactory getInstance() {
         if (instance == null) instance = new DaoFactory();
         return instance;
